@@ -3,7 +3,7 @@
 import { User } from "@/types/user";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { AlertCircle, Check, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,6 +42,18 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
     ),
   },
   {
+    accessorKey: "confirmed",
+    header: "",
+    cell: ({ row }) => {
+      const confirmed = row.original.confirmed;
+      return confirmed ? (
+        <Check className="text-blue-500" size={15} />
+      ) : (
+        <AlertCircle size={15} className="text-red-500" />
+      );
+    },
+  },
+  {
     accessorKey: "name",
     header: "Nome",
   },
@@ -49,17 +61,10 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
     accessorKey: "email",
     header: "Email",
   },
-  {
-    accessorKey: "confirmed",
-    header: "Confirmado?",
-    cell: ({ row }) => {
-      const confirmed = row.original.confirmed;
-      return confirmed ? "Sim" : "Não";
-    },
-  },
+
   {
     accessorKey: "createdAt",
-    header: "Criado em",
+    header: "Entrou em",
     cell: ({ row }) => {
       const createdAt = row.original.createdAt;
       return createdAt ? new Date(createdAt).toLocaleDateString("pt-BR") : "-";
