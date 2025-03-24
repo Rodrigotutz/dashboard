@@ -6,17 +6,14 @@ export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <SidebarProvider
-      defaultOpen={true}
-      className="bg-neutral-900 relative"
-    >
-      <aside className="dark">
+    <SidebarProvider defaultOpen={true} className="bg-neutral-900 relative">
+      <aside>
         <SidebarTrigger className="absolute md:hidden top-0 left-0 z-50 text-white">
           <Menu size={24} />
         </SidebarTrigger>
         <AppSidebar />
       </aside>
-      <main className="w-full rounded-lg md:m-3 pt-3 text-white bg-neutral-950">
+      <main className="w-full rounded-lg md:m-3 p-5 text-white bg-neutral-950">
         {children}
       </main>
     </SidebarProvider>

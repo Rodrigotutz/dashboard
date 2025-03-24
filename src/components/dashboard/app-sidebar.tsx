@@ -148,14 +148,14 @@ export function AppSidebar() {
                 <SidebarMenuSub>
                   <SidebarMenuSubItem>
                     <Link href={"/dashboard/definicoes"}>
-                      <SidebarMenuButton>
+                      <SidebarMenuButton className="cursor-pointer">
                         <BsGear size={5} /> Geral
                       </SidebarMenuButton>
                     </Link>
                   </SidebarMenuSubItem>
                   <SidebarMenuSubItem>
                     <Link href={"/dashboard/definicoes/usuarios"}>
-                      <SidebarMenuButton>
+                      <SidebarMenuButton className="cursor-pointer">
                         <Users size={5} /> Usuarios
                       </SidebarMenuButton>
                     </Link>
