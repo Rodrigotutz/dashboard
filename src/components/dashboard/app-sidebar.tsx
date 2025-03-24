@@ -11,15 +11,14 @@ import { getFirstTwoNames } from "@/utils/getFirstTwoNames";
 import { getInitials } from "@/utils/getInitials";
 
 import {
-  MessageCircle,
   LogOut,
   Settings2,
   Menu,
-  LayoutDashboard,
-  Settings,
   ChevronRight,
-  User,
   Users,
+  House,
+  BookCheck,
+  BusFront,
 } from "lucide-react";
 import {
   Sidebar,
@@ -44,19 +43,35 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { BsGear } from "react-icons/bs";
+import { AiOutlineLoading3Quarters, AiOutlineWhatsApp } from "react-icons/ai";
+import { BsGear, BsWhatsapp } from "react-icons/bs";
 
 const items = [
   {
-    title: "Dashboard",
+    title: "Incio",
     url: "/",
-    icon: LayoutDashboard,
+    icon: House,
+    size: 20,
+  },
+
+  {
+    title: "Whatsapp",
+    url: "/dashboard/whatsapp",
+    icon: AiOutlineWhatsApp,
+    size: 20,
+  },
+
+  {
+    title: "Tarefas",
+    url: "/dashboard/tarefas",
+    icon: BookCheck,
+    size: 20,
   },
   {
-    title: "Chat",
-    url: "/chat",
-    icon: MessageCircle,
+    title: "Viagens",
+    url: "/dashboard/viagens",
+    icon: BusFront,
+    size: 20,
   },
 ];
 
@@ -95,7 +110,7 @@ export function AppSidebar() {
                     ? getFirstTwoNames(session?.user?.name)
                     : "Carregando..."}
                 </h3>
-                <p>Usuario</p>
+                <p>{session?.user?.email}</p>
               </div>
             </SidebarGroupLabel>
             <SidebarSeparator className="mt-5" />
@@ -109,7 +124,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link href={`${item.url}`}>
-                      <item.icon />
+                      <item.icon size={item.size} />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
