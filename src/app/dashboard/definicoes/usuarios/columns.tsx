@@ -23,16 +23,76 @@ import { Checkbox } from "@/components/ui/checkbox";
 export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+    header: ({ table }) => {
+      const selectedRows = table.getFilteredSelectedRowModel().rows.length;
+
+      const handleDeleteSelected = async () => {
+        const selectedUsers = table
+          .getFilteredSelectedRowModel()
+          .rows.map((row) => row.original.id);
+
+        if (selectedUsers.length === 0) return;
+
+        const results = await Promise.all(
+          selectedUsers.map((id) => deleteUserAction(id))
+        );
+
+        const successCount = results.filter((r) => r.success).length;
+
+        if (successCount > 0) {
+          toast.success(`${successCount} usuário(s) excluído(s) com sucesso.`);
+          onDeleteSuccess();
+        } else {
+          toast.error("Falha ao excluir usuários.");
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
+      };
+
+      return (
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+          {selectedRows > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button className="text-red-500" variant="outline" size="sm">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Excluir todos selecionados?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Essa ação não pode ser desfeita. Isso excluirá
+                    permanentemente os usuários selecionados.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="cursor-pointer hover:bg-gray-200">
+                    Cancelar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteSelected}
+                    className="cursor-pointer bg-red-500 hover:bg-red-600 text-white"
+                  >
+                    Excluir todos
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+        </div>
+      );
+    },
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
@@ -61,7 +121,6 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
     accessorKey: "email",
     header: "Email",
   },
-
   {
     accessorKey: "createdAt",
     header: "Entrou em",
@@ -90,7 +149,7 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
       return (
         <AlertDialog>
           <AlertDialogTrigger asChild className="cursor-pointer">
-            <Button className="text-red-500" variant={"outline"} size="sm">
+            <Button className="text-red-500" variant="outline" size="sm">
               <Trash2 className="h-4 w-4" />
             </Button>
           </AlertDialogTrigger>
