@@ -10,12 +10,6 @@ export default function Layout({
         <BsGearFill size={25} /> Configurações Gerais
       </h2>
 
-      <div className="flex gap-5 mt-5">
-        <Link href={"/dashboard/definicoes/"}>Geral</Link>
-        <Link href={"/dashboard/definicoes/autenticacao"}>Autenticação</Link>
-        <Link href={"/dashboard/definicoes/email"}>Email</Link>
-      </div>
-
       <section className="rounded p-5">{children}</section>
     </div>
   );

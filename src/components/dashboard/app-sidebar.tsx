@@ -19,6 +19,9 @@ import {
   House,
   BookCheck,
   BusFront,
+  CheckCheck,
+  LockKeyhole,
+  Mail,
 } from "lucide-react";
 import {
   Sidebar,
@@ -44,7 +47,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { AiOutlineLoading3Quarters, AiOutlineWhatsApp } from "react-icons/ai";
-import { BsGear, BsWhatsapp } from "react-icons/bs";
+import { BsGear } from "react-icons/bs";
 
 const items = [
   {
@@ -71,6 +74,12 @@ const items = [
     title: "Viagens",
     url: "/dashboard/viagens",
     icon: BusFront,
+    size: 20,
+  },
+  {
+    title: "Dicas",
+    url: "/dashboard/dicas",
+    icon: CheckCheck,
     size: 20,
   },
 ];
@@ -150,6 +159,20 @@ export function AppSidebar() {
                     <Link href={"/dashboard/definicoes"}>
                       <SidebarMenuButton className="cursor-pointer">
                         <BsGear size={5} /> Geral
+                      </SidebarMenuButton>
+                    </Link>
+                  </SidebarMenuSubItem>
+                  <SidebarMenuSubItem>
+                    <Link href={"/dashboard/definicoes/autenticacao"}>
+                      <SidebarMenuButton className="cursor-pointer">
+                        <LockKeyhole size={5} /> Autenticação
+                      </SidebarMenuButton>
+                    </Link>
+                  </SidebarMenuSubItem>
+                  <SidebarMenuSubItem>
+                    <Link href={"/dashboard/definicoes/email"}>
+                      <SidebarMenuButton className="cursor-pointer">
+                        <Mail size={5} /> Email
                       </SidebarMenuButton>
                     </Link>
                   </SidebarMenuSubItem>

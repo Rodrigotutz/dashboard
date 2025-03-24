@@ -21,7 +21,7 @@ async function main() {
   });
 
 
-  const users = Array.from({ length: 10 }).map((_, i) => ({
+  const users = Array.from({ length: 50 }).map((_, i) => ({
     email: `user${i + 1}@mail.com`,
     name: `Usuário ${i + 1}`,
     password: hashSync("123456"),

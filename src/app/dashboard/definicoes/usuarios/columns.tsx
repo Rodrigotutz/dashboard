@@ -18,8 +18,29 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import deleteUserAction from "@/utils/auth/deleteUserAction";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+  },
   {
     accessorKey: "name",
     header: "Nome",
