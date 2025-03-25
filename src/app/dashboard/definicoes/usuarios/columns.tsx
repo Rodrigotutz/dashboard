@@ -42,6 +42,7 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
         if (successCount > 0) {
           toast.success(`${successCount} usuário(s) excluído(s) com sucesso.`);
           onDeleteSuccess();
+          table.setRowSelection({}); // Reseta a seleção
         } else {
           toast.error("Falha ao excluir usuários.");
         }
@@ -101,18 +102,7 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
       />
     ),
   },
-  {
-    accessorKey: "confirmed",
-    header: "",
-    cell: ({ row }) => {
-      const confirmed = row.original.confirmed;
-      return confirmed ? (
-        <Check className="text-blue-500" size={15} />
-      ) : (
-        <AlertCircle size={15} className="text-red-500" />
-      );
-    },
-  },
+
   {
     accessorKey: "name",
     header: "Nome",
@@ -131,9 +121,12 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const user = row.original;
       const router = useRouter();
+      const selectedRows = table.getFilteredSelectedRowModel().rows.length;
+
+      if (selectedRows > 0) return null;
 
       const handleDelete = async () => {
         const result = await deleteUserAction(user.id);
@@ -141,6 +134,7 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
         if (result.success) {
           toast.success(result.message);
           onDeleteSuccess();
+          table.setRowSelection({});
         } else {
           toast.error(result.message);
         }
@@ -149,9 +143,7 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
       return (
         <AlertDialog>
           <AlertDialogTrigger asChild className="cursor-pointer">
-            <Button className="text-red-500" variant="outline" size="sm">
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <Trash2 className="h-4 w-4 text-red-500 " />
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
