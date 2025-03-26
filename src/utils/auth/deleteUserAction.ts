@@ -3,14 +3,16 @@
 import { Message } from "@/types/message";
 import db from "@/lib/db";
 
-export default async function deleteUserAction(userId: number): Promise<Message> {
+export default async function deleteUserAction(
+  userId: number
+): Promise<Message> {
   if (!userId) {
     return { success: false, message: "ID do usuário não fornecido" };
   }
 
   const user = await db.user.findUnique({
     where: {
-      id: userId,
+      id: Number(userId),
     },
   });
 
@@ -20,7 +22,7 @@ export default async function deleteUserAction(userId: number): Promise<Message>
 
   await db.user.delete({
     where: {
-      id: userId,
+      id: Number(userId),
     },
   });
 
