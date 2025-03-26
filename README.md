@@ -77,15 +77,7 @@ npx prisma db seed
 
 ### 5 - Configurar servidor SMTP e Alterar visual do email enviado
 
-- Altere o .env com os dados do seu servidor SMTP
-
-```shell
-EMAIL_SERVER_HOST="smtp.gmail.com"
-EMAIL_SERVER_PORT="587"
-EMAIL_SERVER_FROM_ADDRESS="mail@mail.com"
-EMAIL_SERVER_PASSWORD="Sua senha"
-EMAIL_SERVER_FROM_NAME="Seu nome"
-```
+- O servidor SMTP deverá ser configurado dentro do Dashboard - Definições - Email
 
 - Alterar visual de email
 
