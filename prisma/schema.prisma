@@ -21,7 +21,7 @@ model User {
   passwordResetTokens PasswordResetToken[]
   RoomUser            RoomUser[]
   Message             Message[]
-  tips                tips[]
+  tips                Tips[]
 
   @@map("users")
 }
@@ -31,7 +31,7 @@ enum UserType {
   admin
 }
 
-model tips {
+model Tips {
   id       Int     @id @default(autoincrement())
   userId   Int
   title    String
