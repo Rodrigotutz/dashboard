@@ -13,6 +13,7 @@ import { useState } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
+import { Textarea } from "../ui/textarea";
 
 export default function NewTip() {
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,7 @@ export default function NewTip() {
           <PlusCircle /> Nova Dica
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="min-w-3/5 overflow-x">
         <DialogHeader>
           <DialogTitle>Cadastre uma nova dica</DialogTitle>
           <form onSubmit={handleSubmit} className="mt-5">
@@ -41,7 +42,11 @@ export default function NewTip() {
               <Label className="mb-2" htmlFor="content">
                 Descrição:
               </Label>
-              <Input id="content" name="content" />
+              <Textarea
+                id="content"
+                name="content"
+                className="min-h-[55vh] min-w-[40vw]"
+              ></Textarea>
             </div>
 
             <div className="flex gap-2 mb-3">
