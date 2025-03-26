@@ -22,6 +22,7 @@ import {
   CheckCheck,
   LockKeyhole,
   Mail,
+  Info,
 } from "lucide-react";
 import {
   Sidebar,
@@ -47,7 +48,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { AiOutlineLoading3Quarters, AiOutlineWhatsApp } from "react-icons/ai";
-import { BsGear } from "react-icons/bs";
+import { BsCash, BsGear } from "react-icons/bs";
 
 const items = [
   {
@@ -59,27 +60,42 @@ const items = [
 
   {
     title: "Whatsapp",
-    url: "/dashboard/whatsapp",
+    url: "/whatsapp",
     icon: AiOutlineWhatsApp,
     size: 20,
   },
 
   {
-    title: "Tarefas",
-    url: "/dashboard/tarefas",
-    icon: BookCheck,
+    title: "Prestação",
+    url: "/contas",
+    icon: BsCash,
     size: 20,
   },
+
   {
     title: "Viagens",
-    url: "/dashboard/viagens",
+    url: "/viagens",
     icon: BusFront,
     size: 20,
   },
   {
     title: "Dicas",
-    url: "/dashboard/dicas",
+    url: "/dicas",
     icon: CheckCheck,
+    size: 20,
+  },
+
+  {
+    title: "Tarefas",
+    url: "/tarefas",
+    icon: BookCheck,
+    size: 20,
+  },
+
+  {
+    title: "Avisos",
+    url: "/info",
+    icon: Info,
     size: 20,
   },
 ];
@@ -99,105 +115,108 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible={"icon"} variant={"sidebar"}>
-      <SidebarContent className="overflow-hidden bg-neutral-900">
-        <SidebarGroup>
-          <SidebarHeader>
-            <SidebarGroupLabel className="flex gap-2 mt-2">
-              <Avatar>
-                <AvatarImage src="user.png" />
-                <AvatarFallback className="bg-gray-700 text-white text-2xl font-bold">
-                  {session ? (
-                    getInitials(session?.user?.name)
-                  ) : (
-                    <AiOutlineLoading3Quarters className="animate-spin w-5 h-5" />
-                  )}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="text-lg">
-                  {session
-                    ? getFirstTwoNames(session?.user?.name)
-                    : "Carregando..."}
-                </h3>
-                <p>{session?.user?.email}</p>
-              </div>
-            </SidebarGroupLabel>
-            <SidebarSeparator className="mt-5" />
-            <SidebarTrigger className="absolute top-1 right-1 flex items-center gap-2">
-              <Menu /> Fechar Sidebar
-            </SidebarTrigger>
-          </SidebarHeader>
-          <SidebarGroupContent className="mt-5">
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={`${item.url}`}>
-                      <item.icon size={item.size} />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter className="bg-neutral-900">
-        <SidebarMenu>
-          <Collapsible defaultOpen className="group/collapsible">
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton>
-                  <Settings2 /> Definições
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  <SidebarMenuSubItem>
-                    <Link href={"/dashboard/definicoes"}>
-                      <SidebarMenuButton className="cursor-pointer">
-                        <BsGear size={5} /> Geral
-                      </SidebarMenuButton>
-                    </Link>
-                  </SidebarMenuSubItem>
-                  <SidebarMenuSubItem>
-                    <Link href={"/dashboard/definicoes/autenticacao"}>
-                      <SidebarMenuButton className="cursor-pointer">
-                        <LockKeyhole size={5} /> Autenticação
-                      </SidebarMenuButton>
-                    </Link>
-                  </SidebarMenuSubItem>
-                  <SidebarMenuSubItem>
-                    <Link href={"/dashboard/definicoes/email"}>
-                      <SidebarMenuButton className="cursor-pointer">
-                        <Mail size={5} /> Email
-                      </SidebarMenuButton>
-                    </Link>
-                  </SidebarMenuSubItem>
-                  <SidebarMenuSubItem>
-                    <Link href={"/dashboard/definicoes/usuarios"}>
-                      <SidebarMenuButton className="cursor-pointer">
-                        <Users size={5} /> Usuarios
-                      </SidebarMenuButton>
-                    </Link>
-                  </SidebarMenuSubItem>
-                  <SidebarMenuSubItem />
-                </SidebarMenuSub>
-              </CollapsibleContent>
-            </SidebarMenuItem>
-          </Collapsible>
-        </SidebarMenu>
+      <div className="flex flex-col h-full">
+        <SidebarHeader className="shrink-0 bg-neutral-900">
+          <SidebarGroupLabel className="flex gap-2 mt-2">
+            <Avatar>
+              <AvatarImage src="user.png" />
+              <AvatarFallback className="bg-gray-700 text-white text-2xl font-bold">
+                {session ? (
+                  getInitials(session?.user?.name)
+                ) : (
+                  <AiOutlineLoading3Quarters className="animate-spin w-5 h-5" />
+                )}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="text-lg">
+                {session
+                  ? getFirstTwoNames(session?.user?.name)
+                  : "Carregando..."}
+              </h3>
+              <p>{session?.user?.email}</p>
+            </div>
+          </SidebarGroupLabel>
+          <SidebarSeparator className="mt-5" />
+          <SidebarTrigger className="absolute top-1 right-1 flex items-center gap-2">
+            <Menu /> Fechar Sidebar
+          </SidebarTrigger>
+        </SidebarHeader>
 
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={logoutAction}>
-              <LogOut /> Sair
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+        <SidebarContent className="overflow-y-auto flex-grow bg-neutral-900">
+          <SidebarGroup>
+            <SidebarGroupContent className="mt-5">
+              <SidebarMenu>
+                {items.map((item) => (
+                  <SidebarMenuItem key={item.title} className="mb-1">
+                    <SidebarMenuButton asChild>
+                      <Link href={`/dashboard${item.url}`}>
+                        <item.icon size={item.size} />
+                        <span className="text-[16px]">{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+
+        <SidebarFooter className="bg-neutral-900 shrink-0">
+          <SidebarMenu>
+            <Collapsible defaultOpen className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton>
+                    <Settings2 /> Definições
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                      <Link href={"/dashboard/definicoes"}>
+                        <SidebarMenuButton className="cursor-pointer">
+                          <BsGear size={20} /> Geral
+                        </SidebarMenuButton>
+                      </Link>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <Link href={"/dashboard/definicoes/autenticacao"}>
+                        <SidebarMenuButton className="cursor-pointer">
+                          <LockKeyhole size={20} /> Autenticação
+                        </SidebarMenuButton>
+                      </Link>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <Link href={"/dashboard/definicoes/email"}>
+                        <SidebarMenuButton className="cursor-pointer">
+                          <Mail size={20} /> Email
+                        </SidebarMenuButton>
+                      </Link>
+                    </SidebarMenuSubItem>
+                    <SidebarMenuSubItem>
+                      <Link href={"/dashboard/definicoes/usuarios"}>
+                        <SidebarMenuButton className="cursor-pointer">
+                          <Users size={20} /> Usuarios
+                        </SidebarMenuButton>
+                      </Link>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+          </SidebarMenu>
+
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={logoutAction}>
+                <LogOut /> Sair
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </div>
     </Sidebar>
   );
 }

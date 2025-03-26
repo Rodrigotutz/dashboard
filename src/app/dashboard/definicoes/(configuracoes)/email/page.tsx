@@ -101,7 +101,15 @@ export default function Page() {
             variant={"outline"}
             className="cursor-pointer"
             onClick={handleTestSmtp}
-            disabled={loading || testing || !formData.host || !formData.port}
+            disabled={
+              loading ||
+              testing ||
+              !formData.host ||
+              !formData.port ||
+              !formData.password ||
+              !formData.fromAddress ||
+              !formData.fromName
+            }
           >
             {testing ? (
               <div className="flex items-center">
@@ -128,7 +136,7 @@ export default function Page() {
               </Label>
               <Input
                 type="text"
-                disabled={loading}
+                disabled={loading || testing}
                 id="host"
                 name="host"
                 placeholder="smtp.gmail.com"
@@ -138,7 +146,7 @@ export default function Page() {
             </div>
             <div className="mb-5 w-full">
               <PassowordInputs
-                disabled={loading}
+                disabled={loading || testing}
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
@@ -151,7 +159,7 @@ export default function Page() {
               </Label>
               <Input
                 type="text"
-                disabled={loading}
+                disabled={loading || testing}
                 id="port"
                 name="port"
                 placeholder="587"
@@ -168,7 +176,7 @@ export default function Page() {
                 id="fromAddress"
                 name="fromAddress"
                 placeholder="email@gmail.com"
-                disabled={loading}
+                disabled={loading || testing}
                 value={formData.fromAddress}
                 onChange={handleChange}
               />
@@ -178,7 +186,7 @@ export default function Page() {
               <Label className="mb-1">Nome:</Label>
               <Input
                 type="text"
-                disabled={loading}
+                disabled={loading || testing}
                 id="fromName"
                 name="fromName"
                 placeholder="João da Silva"
@@ -189,7 +197,11 @@ export default function Page() {
           </div>
 
           <div className="text-end mt-20">
-            <Button disabled={loading} type="submit" className="font-bold">
+            <Button
+              disabled={loading || testing}
+              type="submit"
+              className="font-bold"
+            >
               {loading ? (
                 <div className="flex items-center justify-center">
                   <AiOutlineLoading3Quarters className="animate-spin w-5 h-5 mr-2" />
