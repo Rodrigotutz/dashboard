@@ -61,7 +61,7 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
             aria-label="Select all"
           />
           {selectedRows > 0 && (
-            <div className="md:absolute right-10 ">
+            <div className="md:absolute right-1 ">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <div>
