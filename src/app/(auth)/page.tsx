@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import loginAction from "@/utils/auth/loginAction";
-import Form from "next/form";
 import Link from "next/link";
 import { useState } from "react";
 import { BsGearFill } from "react-icons/bs";

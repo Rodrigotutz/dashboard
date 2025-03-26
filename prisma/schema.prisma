@@ -32,10 +32,13 @@ enum UserType {
 }
 
 model tips {
-  id      Int    @id @default(autoincrement())
-  userId  Int
-  title   String
-  content String
+  id       Int     @id @default(autoincrement())
+  userId   Int
+  title    String
+  likes    Int?    @default(0)
+  dislikes Int?    @default(0)
+  content  String
+  public   Boolean? @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

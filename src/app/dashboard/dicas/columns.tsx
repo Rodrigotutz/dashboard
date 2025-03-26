@@ -2,6 +2,7 @@
 
 import { Tips } from "@/types/tips";
 import { ColumnDef } from "@tanstack/react-table";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
 
 const truncateText = (text: string, maxLength: number) =>
   text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
@@ -15,6 +16,6 @@ export const columns: ColumnDef<Tips>[] = [
   {
     accessorKey: "content",
     header: "Descrição",
-    cell: ({ row }) => truncateText(row.original.content, 300),
+    cell: ({ row }) => truncateText(row.original.content, 400),
   },
 ];
