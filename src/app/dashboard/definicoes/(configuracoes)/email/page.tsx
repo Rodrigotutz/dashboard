@@ -128,7 +128,7 @@ export default function Page() {
           <h2 className="text-2xl font-bold">Carregando dados...</h2>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="mt-10">
+        <form onSubmit={handleSubmit} className="mt-10 bg-white/5 p-10 rounded-lg">
           <div className="flex flex-col md:flex-row gap-10">
             <div className="mb-5 w-full">
               <Label htmlFor="host" className="mb-1">

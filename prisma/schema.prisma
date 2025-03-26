@@ -21,6 +21,7 @@ model User {
   passwordResetTokens PasswordResetToken[]
   RoomUser            RoomUser[]
   Message             Message[]
+  tips                tips[]
 
   @@map("users")
 }
@@ -28,6 +29,15 @@ model User {
 enum UserType {
   user
   admin
+}
+
+model tips {
+  id      Int    @id @default(autoincrement())
+  userId  Int
+  title   String
+  content String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model PasswordResetToken {
