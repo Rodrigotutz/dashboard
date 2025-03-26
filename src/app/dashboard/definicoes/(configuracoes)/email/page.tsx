@@ -93,7 +93,7 @@ export default function Page() {
 
   return (
     <div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <h2>Configurações de Email</h2>
 
         <div>
@@ -109,7 +109,7 @@ export default function Page() {
                 Testando...
               </div>
             ) : (
-              "Testar SMTP"
+              "Testar"
             )}
           </Button>
         </div>
@@ -121,7 +121,7 @@ export default function Page() {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="mt-10">
-          <div className="flex gap-10">
+          <div className="flex flex-col md:flex-row gap-10">
             <div className="mb-5 w-full">
               <Label htmlFor="host" className="mb-1">
                 Host:
@@ -145,7 +145,7 @@ export default function Page() {
                 }
               />
             </div>
-            <div className="mb-5 w-1/3">
+            <div className="mb-5 md:w-1/3">
               <Label htmlFor="port" className="mb-1">
                 Porta:
               </Label>
@@ -160,7 +160,7 @@ export default function Page() {
               />
             </div>
           </div>
-          <div className="mt-5 flex gap-10">
+          <div className="mt-5 flex flex-col md:flex-row gap-10">
             <div className="w-full">
               <Label className="mb-1">Email:</Label>
               <Input
