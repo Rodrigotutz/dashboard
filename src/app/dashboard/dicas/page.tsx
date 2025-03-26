@@ -78,10 +78,10 @@ export default function Page() {
           </DialogHeader>
           <p>{selectedTip?.content}</p>
           <DialogFooter>
-            <Button variant={"link"} className="text-blue-500">
+            <Button variant={"link"} className="text-blue-500 cursor-pointer">
               <ThumbsUpIcon />
             </Button>
-            <Button variant={"link"} className="text-red-500">
+            <Button variant={"link"} className="text-red-500 cursor-pointer">
               <ThumbsDown />
             </Button>
           </DialogFooter>
