@@ -1,8 +1,33 @@
 import { createTransport } from "nodemailer";
 import { render } from "@react-email/render";
 import React from "react";
+import db from "@/lib/db";
 
 export class SendEmail {
+  private smtpConfig: {
+    host: string;
+    port: number;
+    fromAddress: string;
+    fromName: string;
+    password: string;
+  };
+
+  constructor(smtpConfig?: {
+    host: string;
+    port: number;
+    fromAddress: string;
+    fromName: string;
+    password: string;
+  }) {
+    this.smtpConfig = smtpConfig || {
+      host: process.env.EMAIL_SERVER_HOST!,
+      port: Number(process.env.EMAIL_SERVER_PORT),
+      fromAddress: process.env.EMAIL_SERVER_FROM_ADDRESS!,
+      fromName: process.env.EMAIL_SERVER_FROM_NAME!,
+      password: process.env.EMAIL_SERVER_PASSWORD!,
+    };
+  }
+
   async sendEmail(
     to: string,
     subject: string,
@@ -10,19 +35,19 @@ export class SendEmail {
     text?: string
   ): Promise<void> {
     const transporter = createTransport({
-      host: process.env.EMAIL_SERVER_HOST,
-      port: Number(process.env.EMAIL_SERVER_PORT),
-      secure: false,
+      host: this.smtpConfig.host,
+      port: this.smtpConfig.port,
+      secure: this.smtpConfig.port === 465,
       auth: {
-        user: process.env.EMAIL_SERVER_FROM_ADDRESS,
-        pass: process.env.EMAIL_SERVER_PASSWORD,
+        user: this.smtpConfig.fromAddress,
+        pass: this.smtpConfig.password,
       },
     });
 
     const response = await transporter.sendMail({
       from: {
-        address: process.env.EMAIL_SERVER_FROM_ADDRESS || "",
-        name: process.env.EMAIL_SERVER_FROM_NAME || "",
+        address: this.smtpConfig.fromAddress,
+        name: this.smtpConfig.fromName,
       },
       to: to,
       subject: subject,
@@ -38,7 +63,22 @@ export class SendEmail {
   }
 
   async getHtml(element: React.ReactElement): Promise<string> {
-    const html = await render(element);
-    return html;
+    return render(element);
+  }
+
+  static async createFromDatabase() {
+    const smtpConfig = await db.smtpConfig.findFirst();
+
+    if (!smtpConfig) {
+      throw new Error("Configurações SMTP não encontradas no banco de dados");
+    }
+
+    return new SendEmail({
+      host: smtpConfig.host,
+      port: smtpConfig.port,
+      fromAddress: smtpConfig.fromAddress,
+      fromName: smtpConfig.fromName,
+      password: smtpConfig.password,
+    });
   }
 }

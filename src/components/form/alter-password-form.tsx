@@ -37,7 +37,7 @@ export default function AlterPasswordForm({ userId }: { userId: number }) {
 
   return (
     <div className="w-full h-screen flex items-center justify-center p-5 md:p-0">
-      <div className="z-10 bg-white w-[500px] p-5 rounded flex flex-col gap-5">
+      <div className="z-10 bg-neutral-950 w-[500px] p-5 rounded flex flex-col gap-5">
         <div>
           <h2 className="text-2xl font-bold mb-2">Altere sua senha</h2>
           <p className="text-sm">Informe sua nova senha</p>

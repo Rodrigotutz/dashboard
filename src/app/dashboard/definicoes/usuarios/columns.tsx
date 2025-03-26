@@ -3,7 +3,7 @@
 import { User } from "@/types/user";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Check, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,7 +42,7 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
         if (successCount > 0) {
           toast.success(`${successCount} usuário(s) excluído(s) com sucesso.`);
           onDeleteSuccess();
-          table.setRowSelection({}); // Reseta a seleção
+          table.setRowSelection({});
         } else {
           toast.error("Falha ao excluir usuários.");
         }
@@ -61,35 +61,50 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
             aria-label="Select all"
           />
           {selectedRows > 0 && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button className="text-red-500" variant="outline" size="sm">
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Excluir todos selecionados?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Essa ação não pode ser desfeita. Isso excluirá
-                    permanentemente os usuários selecionados.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="cursor-pointer hover:bg-gray-200">
-                    Cancelar
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDeleteSelected}
-                    className="cursor-pointer bg-red-500 hover:bg-red-600 text-white"
-                  >
-                    Excluir todos
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <div className="md:absolute right-10 ">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <div>
+                    <Button
+                      className="text-red-500 md:hidden"
+                      variant="outline"
+                      size="sm"
+                    >
+                      <Trash2 />
+                    </Button>
+                    <Button
+                      className="text-red-500 hidden md:block"
+                      variant="outline"
+                      size="sm"
+                    >
+                      Excluir Selecionados
+                    </Button>
+                  </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Excluir todos selecionados?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Essa ação não pode ser desfeita. Isso excluirá
+                      permanentemente os usuários selecionados.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="cursor-pointer hover:bg-gray-200">
+                      Cancelar
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteSelected}
+                      className="cursor-pointer bg-red-500 hover:bg-red-600 text-white"
+                    >
+                      Excluir todos
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           )}
         </div>
       );
