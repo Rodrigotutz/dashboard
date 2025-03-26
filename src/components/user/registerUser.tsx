@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { Checkbox } from "@/components/ui/checkbox";
+
 interface RegisterUserProps {
   children?: React.ReactNode;
   isAdmin?: boolean;
@@ -91,6 +93,15 @@ export default function RegisterUser({
       </div>
 
       <PassowordInput disabled={loading} />
+
+      {isAdmin ? (
+        <div className="flex gap-2 mt-5">
+          <Checkbox name="admin" id="admin" />
+          <Label htmlFor="admin" >Administrador</Label>
+        </div>
+      ) : (
+        ""
+      )}
 
       <Button type="submit" className="w-full mt-5" disabled={loading}>
         {loading ? (

@@ -134,7 +134,13 @@ export function AppSidebar() {
                   ? getFirstTwoNames(session?.user?.name)
                   : "Carregando..."}
               </h3>
-              <p>{session?.user?.email}</p>
+              <p>
+                {session
+                  ? session?.user?.type === "admin"
+                    ? "Administrador"
+                    : "Usuário"
+                  : "Carregando..."}
+              </p>
             </div>
           </SidebarGroupLabel>
           <SidebarSeparator className="mt-5" />
@@ -163,51 +169,52 @@ export function AppSidebar() {
         </SidebarContent>
 
         <SidebarFooter className="bg-neutral-900 shrink-0">
-          <SidebarMenu>
-            <Collapsible defaultOpen className="group/collapsible">
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton>
-                    <Settings2 /> Definições
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    <SidebarMenuSubItem>
-                      <Link href={"/dashboard/definicoes"}>
-                        <SidebarMenuButton className="cursor-pointer">
-                          <BsGear size={20} /> Geral
-                        </SidebarMenuButton>
-                      </Link>
-                    </SidebarMenuSubItem>
-                    <SidebarMenuSubItem>
-                      <Link href={"/dashboard/definicoes/autenticacao"}>
-                        <SidebarMenuButton className="cursor-pointer">
-                          <LockKeyhole size={20} /> Autenticação
-                        </SidebarMenuButton>
-                      </Link>
-                    </SidebarMenuSubItem>
-                    <SidebarMenuSubItem>
-                      <Link href={"/dashboard/definicoes/email"}>
-                        <SidebarMenuButton className="cursor-pointer">
-                          <Mail size={20} /> Email
-                        </SidebarMenuButton>
-                      </Link>
-                    </SidebarMenuSubItem>
-                    <SidebarMenuSubItem>
-                      <Link href={"/dashboard/definicoes/usuarios"}>
-                        <SidebarMenuButton className="cursor-pointer">
-                          <Users size={20} /> Usuarios
-                        </SidebarMenuButton>
-                      </Link>
-                    </SidebarMenuSubItem>
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
-            </Collapsible>
-          </SidebarMenu>
-
+          {session?.user?.type === "admin" ? (
+            <SidebarMenu>
+              <Collapsible defaultOpen className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton>
+                      <Settings2 /> Definições
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <Link href={"/dashboard/definicoes"}>
+                          <SidebarMenuButton className="cursor-pointer">
+                            <BsGear size={20} /> Geral
+                          </SidebarMenuButton>
+                        </Link>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <Link href={"/dashboard/definicoes/autenticacao"}>
+                          <SidebarMenuButton className="cursor-pointer">
+                            <LockKeyhole size={20} /> Autenticação
+                          </SidebarMenuButton>
+                        </Link>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <Link href={"/dashboard/definicoes/email"}>
+                          <SidebarMenuButton className="cursor-pointer">
+                            <Mail size={20} /> Email
+                          </SidebarMenuButton>
+                        </Link>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <Link href={"/dashboard/definicoes/usuarios"}>
+                          <SidebarMenuButton className="cursor-pointer">
+                            <Users size={20} /> Usuarios
+                          </SidebarMenuButton>
+                        </Link>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
+            </SidebarMenu>
+          ) : null}
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton onClick={logoutAction}>

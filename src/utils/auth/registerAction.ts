@@ -24,7 +24,10 @@ export default async function registerAction(
     name: string;
     email: string;
     password: string;
+    admin?: string;
   };
+
+  const userAdmin = data.admin === 'on'
 
   if (!data.name || !data.email || !data.password) {
     return { success: false, message: "Preencha todos os campos" };
@@ -47,6 +50,7 @@ export default async function registerAction(
     return { success: false, message: "Esse email já está em uso!" };
   }
 
+
   const user: User = await db.user.create({
     data: {
       email: data.email,
@@ -56,6 +60,7 @@ export default async function registerAction(
       confirmCode: isAdmin
         ? null
         : Math.floor(100000 + Math.random() * 900000).toString(),
+      type: data.admin ? "admin" : "user"
     },
   });
 

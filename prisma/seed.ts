@@ -13,6 +13,7 @@ async function main() {
       password: hashSync(process.env.ROOT_DATABASE_PASSWORD ?? "123456789"),
       confirmed: true,
       confirmCode: null,
+      type: "admin",
     },
   });
 
@@ -20,6 +21,8 @@ async function main() {
     root,
   });
 
+  {
+    /**
 
   const users = Array.from({ length: 50 }).map((_, i) => ({
     email: `user${i + 1}@mail.com`,
@@ -63,6 +66,8 @@ async function main() {
   console.log(
     "10 salas fictícias criadas com sucesso, associadas a usuários aleatórios"
   );
+  */
+  }
 }
 
 main()

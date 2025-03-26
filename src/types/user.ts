@@ -6,4 +6,5 @@ export type User = {
   confirmed?: boolean | null;
   confirmCode?: string | null;
   createdAt: string | Date;
+  type?: "admin" | "user"
 };

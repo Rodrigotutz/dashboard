@@ -127,6 +127,14 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
     header: "Email",
   },
   {
+    accessorKey: "type",
+    header: "Tipo",
+    cell: ({ getValue }) => {
+      const type = getValue();
+      return type === "admin" ? "Administrador" : "Usuário";
+    },
+  },
+  {
     accessorKey: "createdAt",
     header: "Entrou em",
     cell: ({ row }) => {

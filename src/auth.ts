@@ -14,7 +14,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           credentials.email as string,
           credentials.password as string
         );
-
         return user;
       },
     }),
@@ -24,12 +23,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.id) {
         session.user.id = token.id as string;
       }
+      if (token?.type && (token.type === "admin" || token.type === "user")) {
+        session.user.type = token.type;
+      }
       return session;
     },
-
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id as string;
+        token.type = user.type;
       }
       return token;
     },

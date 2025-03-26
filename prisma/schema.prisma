@@ -16,12 +16,18 @@ model User {
   password    String
   confirmed   Boolean?
   confirmCode String?
+  type        UserType @default(user)
 
   passwordResetTokens PasswordResetToken[]
   RoomUser            RoomUser[]
   Message             Message[]
 
   @@map("users")
+}
+
+enum UserType {
+  user
+  admin
 }
 
 model PasswordResetToken {
@@ -37,13 +43,13 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
-model SmtpConfig{
-  id Int @id @default(autoincrement())
-  host String
-  port Int
-  password String
+model SmtpConfig {
+  id          Int    @id @default(autoincrement())
+  host        String
+  port        Int
+  password    String
   fromAddress String @unique
-  fromName String
+  fromName    String
 
   @@map("smtp_config")
 }

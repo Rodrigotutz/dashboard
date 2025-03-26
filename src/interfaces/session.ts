@@ -3,5 +3,6 @@ export interface Session {
     name?: string;
     email?: string;
     id?: string;
+    type: "admin" | "user";
   };
 }

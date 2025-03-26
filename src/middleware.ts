@@ -1,18 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 
-export function middleware(req: NextRequest) {
-  const isProduction = process.env.NODE_ENV === "production";
-  const authCookie = req.cookies.get(isProduction ? "__Secure-authjs.session-token" : "authjs.session-token");
-  
+export async function middleware(req: NextRequest) {
+  const session = await auth();
+
   const loginPage = req.nextUrl.pathname === "/";
   const dashboardPage = req.nextUrl.pathname.startsWith("/dashboard");
   const chatPage = req.nextUrl.pathname.startsWith("/chat");
+  const settingsPage = req.nextUrl.pathname.startsWith("/dashboard/definicoes");
 
-  if (!authCookie && (dashboardPage || chatPage)) {
+  if (!session && (dashboardPage || chatPage)) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (authCookie && loginPage) {
+  if (session && loginPage) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  if (session && session.user.type !== "admin" && settingsPage) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
@@ -20,5 +25,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/dashboard", "/chat/:path*"],
+  matcher: ["/", "/dashboard/:path*", "/chat/:path*"],
 };
