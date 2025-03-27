@@ -90,7 +90,7 @@ export default function Page() {
           }}
           className="mt-10 w-full flex flex-col justify-center items-center"
         >
-          <div className="w-full flex justify-center items-center gap-5">
+          <div className="w-full flex justify-center items-center gap-2 md:gap-5">
             {code.map((digit, index) => (
               <Input
                 className="w-12 h-12 text-center"
