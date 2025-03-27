@@ -71,6 +71,10 @@ export default function Page() {
     });
   };
 
+  const handleNewCode = () => {
+    toast.error("Entre em contato com o administrador do sistema")
+  }
+
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div className="z-10 text-center">
@@ -102,12 +106,15 @@ export default function Page() {
               />
             ))}
           </div>
-          <div className="mt-10">
+          <div className="mt-5">
             <Button type="submit" disabled={loading}>
               {loading ? "Carregando..." : "Confirmar E-mail"}
             </Button>
           </div>
         </form>
+        <div className="mt-5 text-neutral-500 underline" onClick={handleNewCode}>
+          <Button variant={"link"} className="text-neutral-700 cursor-pointer">Solicitar novo código</Button>
+        </div>
       </div>
     </div>
   );

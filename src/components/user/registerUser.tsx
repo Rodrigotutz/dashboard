@@ -41,6 +41,13 @@ export default function RegisterUser({
     const data = new FormData(event.target as HTMLFormElement);
     const result = await registerAction(data, isAdmin);
 
+    if (result.type === "email-failure") {
+      toast.error(result.message);
+      setLoading(false);
+      router.push("/confirmar");
+      return
+    }
+
     if (!result.success) {
       toast.error(result.message, { duration: result.duration });
       setLoading(false);

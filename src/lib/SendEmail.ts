@@ -1,31 +1,26 @@
 import { createTransport } from "nodemailer";
 import { render } from "@react-email/render";
 import React from "react";
-import db from "@/lib/db";
+import { getSmtpConfig } from "@/utils/email/getSmtpConfig";
+
+interface SmtpConfig {
+  host: string;
+  port: number;
+  fromAddress: string;
+  fromName: string;
+  password: string;
+}
 
 export class SendEmail {
-  private smtpConfig: {
-    host: string;
-    port: number;
-    fromAddress: string;
-    fromName: string;
-    password: string;
-  };
+  private smtpConfig: SmtpConfig;
 
-  constructor(smtpConfig?: {
-    host: string;
-    port: number;
-    fromAddress: string;
-    fromName: string;
-    password: string;
-  }) {
-    this.smtpConfig = smtpConfig || {
-      host: process.env.EMAIL_SERVER_HOST!,
-      port: Number(process.env.EMAIL_SERVER_PORT),
-      fromAddress: process.env.EMAIL_SERVER_FROM_ADDRESS!,
-      fromName: process.env.EMAIL_SERVER_FROM_NAME!,
-      password: process.env.EMAIL_SERVER_PASSWORD!,
-    };
+  private constructor(smtpConfig: SmtpConfig) {
+    if (!smtpConfig?.host || !smtpConfig?.port) {
+      throw new Error(
+        "Configuração SMTP inválida: host e port são obrigatórios"
+      );
+    }
+    this.smtpConfig = smtpConfig;
   }
 
   async sendEmail(
@@ -34,31 +29,35 @@ export class SendEmail {
     html: string,
     text?: string
   ): Promise<void> {
-    const transporter = createTransport({
-      host: this.smtpConfig.host,
-      port: this.smtpConfig.port,
-      secure: this.smtpConfig.port === 465,
-      auth: {
-        user: this.smtpConfig.fromAddress,
-        pass: this.smtpConfig.password,
-      },
-    });
+    try {
+      const transporter = createTransport({
+        host: this.smtpConfig.host,
+        port: this.smtpConfig.port,
+        secure: this.smtpConfig.port === 465,
+        auth: {
+          user: this.smtpConfig.fromAddress,
+          pass: this.smtpConfig.password,
+        },
+      });
 
-    const response = await transporter.sendMail({
-      from: {
-        address: this.smtpConfig.fromAddress,
-        name: this.smtpConfig.fromName,
-      },
-      to: to,
-      subject: subject,
-      html: html,
-      text: text,
-    });
+      const response = await transporter.sendMail({
+        from: {
+          address: this.smtpConfig.fromAddress,
+          name: this.smtpConfig.fromName,
+        },
+        to: to,
+        subject: subject,
+        html: html,
+        text: text,
+      });
 
-    const failed = response.rejected.concat(response.pending).filter(Boolean);
-
-    if (failed.length) {
-      throw new Error(`Email (${failed.join(", ")}) não pode ser enviado`);
+      const failed = response.rejected.concat(response.pending).filter(Boolean);
+      if (failed.length) {
+        throw new Error(`Email (${failed.join(", ")}) não pode ser enviado`);
+      }
+    } catch (error) {
+      console.error("Erro ao enviar email:", error);
+      throw new Error("Falha ao enviar email");
     }
   }
 
@@ -66,19 +65,26 @@ export class SendEmail {
     return render(element);
   }
 
-  static async createFromDatabase() {
-    const smtpConfig = await db.smtpConfig.findFirst();
+  static async create(): Promise<SendEmail> {
+    try {
+      const smtpConfig = await getSmtpConfig();
 
-    if (!smtpConfig) {
-      throw new Error("Configurações SMTP não encontradas no banco de dados");
+      if (!smtpConfig || "success" in smtpConfig) {
+        throw new Error(
+          smtpConfig?.message || "Configurações SMTP não encontradas"
+        );
+      }
+
+      return new SendEmail({
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        fromAddress: smtpConfig.fromAddress,
+        fromName: smtpConfig.fromName,
+        password: smtpConfig.password,
+      });
+    } catch (error) {
+      console.error("Erro ao criar SendEmail:", error);
+      throw new Error("Falha ao inicializar serviço de email");
     }
-
-    return new SendEmail({
-      host: smtpConfig.host,
-      port: smtpConfig.port,
-      fromAddress: smtpConfig.fromAddress,
-      fromName: smtpConfig.fromName,
-      password: smtpConfig.password,
-    });
   }
 }

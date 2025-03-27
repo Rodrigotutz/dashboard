@@ -11,7 +11,11 @@ async function sendEmail(user: User) {
     return;
   }
   const confirmEmail = new ConfirmRegisterEmail();
-  await confirmEmail.execute(user.name, user.email, user.confirmCode);
+  try {
+    await confirmEmail.execute(user.name, user.email, user.confirmCode);
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 }
 
 export default async function registerAction(
@@ -27,7 +31,7 @@ export default async function registerAction(
     admin?: string;
   };
 
-  const userAdmin = data.admin === 'on'
+  const userAdmin = data.admin === "on";
 
   if (!data.name || !data.email || !data.password) {
     return { success: false, message: "Preencha todos os campos" };
@@ -50,7 +54,6 @@ export default async function registerAction(
     return { success: false, message: "Esse email já está em uso!" };
   }
 
-
   const user: User = await db.user.create({
     data: {
       email: data.email,
@@ -60,12 +63,20 @@ export default async function registerAction(
       confirmCode: isAdmin
         ? null
         : Math.floor(100000 + Math.random() * 900000).toString(),
-      type: data.admin ? "admin" : "user"
+      type: data.admin ? "admin" : "user",
     },
   });
 
   if (!isAdmin) {
-    await sendEmail(user);
+    try {
+      await sendEmail(user);
+    } catch (error) {
+      return {
+        success: false,
+        message: "Não foi possível enviar o email, solicite um novo código",
+        type: 'email-failure'
+      };
+    }
   }
 
   return {
