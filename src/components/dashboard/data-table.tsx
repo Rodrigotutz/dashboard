@@ -29,13 +29,15 @@ import { Input } from "@/components/ui/input";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onRowClick?: (row: TData) => void; // ✅ Prop opcional para tornar a linha clicável
+  onRowClick?: (row: TData) => void;
+  className?: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onRowClick,
+  className
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -59,7 +61,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
+    <div className={className}>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filtrar por..."
@@ -79,9 +81,9 @@ export function DataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>

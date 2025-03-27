@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { Message } from "@/types/message";
 import registerLike from "@/utils/dicas/registerLike";
 import deleteTip from "@/utils/dicas/deleteTip";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page() {
   const [data, setData] = useState<Tips[]>([]);
@@ -192,7 +193,23 @@ export default function Page() {
         </DialogContent>
       </Dialog>
 
-      <DataTable columns={getColumns()} data={data} onRowClick={setSelectedTip} />
+      {loading ? (
+        <div className="py-4">
+          <Skeleton className="max-w-sm h-[35px] rounded-md" />
+          <Skeleton className="w-full h-[35px] rounded-b-none mt-5" />
+          <Skeleton className="w-full h-[100px] rounded-t-none" />
+          <div className="flex justify-end gap-2 mt-5">
+            <Skeleton className="w-[97px] h-[30px] rounded-md" />
+            <Skeleton className="w-[97px] h-[30px] rounded-md" />
+          </div>
+        </div>
+      ) : (
+        <DataTable
+          columns={getColumns()}
+          data={data}
+          onRowClick={setSelectedTip}
+        />
+      )}
     </div>
   );
 }
