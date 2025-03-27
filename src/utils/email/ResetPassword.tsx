@@ -36,7 +36,7 @@ export class ResetPassword {
   }
 
   async execute(username: string, email: string, resetToken?: string) {
-    const sendEmail = new SendEmail();
+    const sendEmail = await SendEmail.create();
     const baseUrl = this.getBaseUrl();
     const resetLink = `${baseUrl}/alterar/${resetToken}`;
 
