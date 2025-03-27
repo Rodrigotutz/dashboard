@@ -8,9 +8,11 @@ import Link from "next/link";
 import { forgetAction } from "@/utils/auth/forgetAction";
 import { toast } from "sonner";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -27,6 +29,7 @@ export default function Page() {
 
     toast.success(result.message);
     setLoading(false);
+    router.push("/")
   };
 
   return (
