@@ -66,7 +66,7 @@ export default function Page() {
       </div>
 
       <Dialog open={!!selectedTip} onOpenChange={() => setSelectedTip(null)}>
-        <DialogContent className="min-w-4xl max-h-[80vh] flex flex-col">
+        <DialogContent className="min-w-6xl max-h-[90vh] flex flex-col">
           <DialogHeader className="shrink-0">
             <DialogTitle className="text-center mb-5">{selectedTip?.title}</DialogTitle>
           </DialogHeader>
