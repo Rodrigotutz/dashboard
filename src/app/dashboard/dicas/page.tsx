@@ -119,7 +119,10 @@ export default function Page() {
             <DialogTitle className="text-center mb-5">{selectedTip?.title}</DialogTitle>
           </DialogHeader>
           <div
-            className="prose dark:prose-invert max-w-sm md:max-w-full overflow-y-auto overflow-x-hidden flex-1"
+            className="prose dark:prose-invert max-w-none 
+            [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
+            [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700
+            overflow-y-auto flex-1"
             dangerouslySetInnerHTML={{ __html: selectedTip?.content || "" }}
           />
 
