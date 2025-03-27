@@ -70,49 +70,49 @@ export default function TipEditor({ onSuccess, tip, onUpdate }: NewTipProps) {
       return;
     }
 
-    if (tip && tip.id) {
-      const result = await updateTip(tip.id, {
-        title,
-        content,
-        public: isPublic
-      });
-
-      if (!result.success) {
-        toast.error(result.message);
-        setIsSubmitting(false);
-        return;
-      }
-
-      toast.success(result.message);
-      setOpen(false);
-
-      if (result.data && onUpdate) {
-        onUpdate({
-          ...result.data,
-          userName: tip.userName
+    try {
+      if (tip && tip.id) {
+        const result = await updateTip(tip.id, {
+          title,
+          content,
+          public: isPublic
         });
+
+        if (!result.success) {
+          toast.error(result.message);
+          return;
+        }
+
+        toast.success(result.message);
+        if (result.data && onUpdate) {
+          onUpdate({
+            ...result.data,
+            userName: tip.userName
+          });
+        }
+      } else {
+        const result = await registerTip({
+          userId: Number(session.user.id),
+          title,
+          content,
+          public: isPublic
+        });
+
+        if (!result.success) {
+          toast.error(result.message);
+          return;
+        }
+
+        toast.success(result.message);
       }
-    } else {
-      const result = await registerTip({
-        userId: Number(session.user.id),
-        title,
-        content,
-        public: isPublic
-      });
 
-      if (!result.success) {
-        toast.error(result.message);
-        setIsSubmitting(false);
-        return;
-      }
+      setOpen(false);
+      if (onSuccess) onSuccess();
 
-      toast.success(result.message);
-    }
-
-    setIsSubmitting(false);
-
-    if (onSuccess) {
-      onSuccess();
+    } catch (error) {
+      toast.error("Erro ao processar a requisição");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -197,7 +197,7 @@ export default function TipEditor({ onSuccess, tip, onUpdate }: NewTipProps) {
 
         <DialogFooter>
           <Button
-            className="font-bold"
+            className="font-bold "
             type="submit"
             disabled={isSubmitting}
             onClick={handleSubmit}
