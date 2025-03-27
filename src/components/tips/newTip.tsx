@@ -91,16 +91,20 @@ export default function NewTip({ onSuccess }: NewTipProps) {
           <DialogTitle>Cadastre uma nova dica</DialogTitle>
           <form onSubmit={handleSubmit} className="mt-5">
             <div className="mb-5">
-              <Label className="mb-2" htmlFor="title">
-                Título:
-              </Label>
-              <Input
-                id="title"
-                name="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
+
+              {editorLoading ? (<Skeleton className="h-[37px] w-full" />
+              ) : (<div>
+                <Label className="mb-2" htmlFor="title">
+                  Título:
+                </Label>
+                <Input
+                  id="title"
+                  name="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </div>)}
             </div>
 
             <div className="mb-5">
