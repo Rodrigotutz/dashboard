@@ -66,19 +66,22 @@ export default function Page() {
       </div>
 
       <Dialog open={!!selectedTip} onOpenChange={() => setSelectedTip(null)}>
-        <DialogContent className="min-w-6xl max-h-[90vh] flex flex-col">
+        <DialogContent className="md:min-w-6xl max-h-[80vh] md:max-h-[90vh] flex flex-col">
           <DialogHeader className="shrink-0">
             <DialogTitle className="text-center mb-5">{selectedTip?.title}</DialogTitle>
           </DialogHeader>
           <div
-            className="prose dark:prose-invert max-w-none 
+            className="prose dark:prose-invert max-w-sm md:max-w-full
              [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
              [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700
-             overflow-y-auto flex-1"
+             overflow-y-auto overflow-x-hidden flex-1"
             dangerouslySetInnerHTML={{ __html: selectedTip?.content || '' }}
           />
-          <DialogFooter className="shrink-0 flex justify-between items-center relative mt-5 border-t pt-5">
-            <span className="absolute left-0 text-xs">Criado por: {selectedTip?.userName}</span>
+
+          <DialogFooter className="md:shrink-0 flex flex-row justify-between items-center md:relative mt-5 border-t pt-5">
+
+            <span className="md:absolute md:left-0 text-xs">Criado por: {selectedTip?.userName}</span>
+
             <div className="flex items-center gap-2">
               <Button variant={"link"} className="text-blue-500 cursor-pointer">
                 <ThumbsUpIcon />
