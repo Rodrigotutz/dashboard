@@ -66,16 +66,18 @@ export default function Page() {
       </div>
 
       <Dialog open={!!selectedTip} onOpenChange={() => setSelectedTip(null)}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
+        <DialogContent className="min-w-4xl max-h-[80vh] flex flex-col">
+          <DialogHeader className="shrink-0">
             <DialogTitle className="text-center mb-5">{selectedTip?.title}</DialogTitle>
           </DialogHeader>
           <div
-            className="prose dark:prose-invert max-w-none [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6"
+            className="prose dark:prose-invert max-w-none 
+             [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
+             [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700
+             overflow-y-auto flex-1"
             dangerouslySetInnerHTML={{ __html: selectedTip?.content || '' }}
           />
-          <DialogFooter className="flex justify-between items-center relative mt-5 border-t pt-5">
-
+          <DialogFooter className="shrink-0 flex justify-between items-center relative mt-5 border-t pt-5">
             <span className="absolute left-0 text-xs">Criado por: {selectedTip?.userName}</span>
             <div className="flex items-center gap-2">
               <Button variant={"link"} className="text-blue-500 cursor-pointer">
