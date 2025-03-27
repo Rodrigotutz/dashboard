@@ -9,52 +9,84 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Editor } from "@tinymce/tinymce-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { registerTip } from "@/utils/dicas/registerTips";
+import { toast } from "sonner";
 
-export default function NewTip() {
-  const [loading, setLoading] = useState(false);
+interface NewTipProps {
+  onSuccess?: () => void;
+}
+
+export default function NewTip({ onSuccess }: NewTipProps) {
+  const [session, setSession] = useState<any>(null);
   const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
+  const [editorLoading, setEditorLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
-    const items = event.clipboardData.items;
-    for (const item of items) {
-      if (item.type.startsWith("image")) {
-        const file = item.getAsFile();
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const target = e.target as FileReader;
-            if (target && target.result) {
-              const imgTag = `<img src="${target.result}" alt="Imagem colada" style="max-width: 60%;"/>`;
-              setContent((prev) => prev + imgTag);
-            }
-          };
-          reader.readAsDataURL(file);
-        }
-      } else if (item.type === "text/plain") {
-        item.getAsString((text) => {
-          setContent((prev) => prev + text);
-        });
-      }
+  useEffect(() => {
+    async function fetchSession() {
+      const res = await fetch("/api/auth/session");
+      const data = await res.json();
+      setSession(data);
+    }
+
+    fetchSession();
+  }, []);
+
+  const handleEditorChange = (content: string) => {
+    setContent(content);
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    if (!session?.user?.id) {
+      setIsSubmitting(false);
+      return;
+    }
+
+    const result = await registerTip({
+      userId: Number(session.user.id),
+      title,
+      content,
+      public: isPublic
+    });
+
+    if (!result.success) {
+      toast.error(result.message);
+      setIsSubmitting(false);
+      return;
+    }
+
+    toast.success(result.message);
+    setIsSubmitting(false);
+    setOpen(false);
+    setTitle("");
+    setContent("");
+    setIsPublic(false);
+
+    if (onSuccess) {
+      onSuccess();
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Processar envio aqui...
-  };
-
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <PlusCircle /> Nova Dica
         </Button>
       </DialogTrigger>
-      <DialogContent className="min-w-3/5 max-h-[90vh] overflow-auto">
+      <DialogContent className="min-w-4/5 max-h-[90vh] overflow-auto dark">
         <DialogHeader>
           <DialogTitle>Cadastre uma nova dica</DialogTitle>
           <form onSubmit={handleSubmit} className="mt-5">
@@ -62,29 +94,64 @@ export default function NewTip() {
               <Label className="mb-2" htmlFor="title">
                 Título:
               </Label>
-              <Input id="title" name="title" />
+              <Input
+                id="title"
+                name="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
             </div>
 
             <div className="mb-5">
               <Label className="mb-2" htmlFor="content">
                 Descrição:
               </Label>
-              <div
-                id="content"
-                contentEditable
-                className="min-h-[50vh] min-w-[40vw] border p-4 overflow-auto bg-neutral-950 rounded-md "
-                dangerouslySetInnerHTML={{ __html: content }}
-                onPaste={handlePaste}
-              ></div>
+              {editorLoading ? (
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="h-[50px] w-full" />
+                  <Skeleton className="h-[600px] w-full" />
+                </div>
+              ) : null}
+
+              <div style={{ display: editorLoading ? 'none' : 'block' }}>
+                <Editor
+                  apiKey="1xncjp6ftmlmfrylsguwag7884pouij37b0tl4mxg7svqjoa"
+                  onInit={() => setEditorLoading(false)}
+                  value={content}
+                  init={{
+                    height: 700,
+                    menubar: false,
+                    plugins: 'advlist autolink lists link image charmap preview anchor searchreplace',
+                    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent',
+                    paste_data_images: true,
+                    content_style: 'body { font-family:Arial, sans-serif; font-size:14px }',
+                    font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
+                    font_size_input_default_unit: "pt",
+                    branding: false
+                  }}
+                  onEditorChange={handleEditorChange}
+                />
+              </div>
             </div>
 
             <div className="flex gap-2 mb-3">
-              <Checkbox name="public" id="public" />
+              <Checkbox
+                id="public"
+                checked={isPublic}
+                onCheckedChange={(checked) => setIsPublic(!!checked)}
+              />
               <Label htmlFor="public">Público</Label>
             </div>
 
             <div className="text-end">
-              <Button className="font-bold">Salvar Dica</Button>
+              <Button
+                className="font-bold"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Salvando..." : "Salvar Dica"}
+              </Button>
             </div>
           </form>
         </DialogHeader>

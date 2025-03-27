@@ -1,6 +1,10 @@
 export type Tips = {
-    title: string
-    content: string
-    likes?: number
-    dislikes?: number
-}
+  id?: number;
+  userId: number;
+  userName?: string;
+  title: string;
+  content: string;
+  public?: boolean | null;
+  likes?: number | null;
+  dislikes?: number | null;
+};

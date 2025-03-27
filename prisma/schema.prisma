@@ -41,6 +41,7 @@ model Tips {
   public   Boolean? @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("tips")
 }
 
 model PasswordResetToken {
