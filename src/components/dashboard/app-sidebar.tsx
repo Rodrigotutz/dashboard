@@ -23,6 +23,8 @@ import {
   LockKeyhole,
   Mail,
   Info,
+  UsersRound,
+  UserSquare2Icon,
 } from "lucide-react";
 import {
   Sidebar,
@@ -62,6 +64,13 @@ const items = [
     title: "Whatsapp",
     url: "/whatsapp",
     icon: AiOutlineWhatsApp,
+    size: 20,
+  },
+
+  {
+    title: "Clientes",
+    url: "/clientes",
+    icon: UserSquare2Icon,
     size: 20,
   },
 
@@ -217,7 +226,7 @@ export function AppSidebar() {
           ) : null}
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton onClick={logoutAction}>
+              <SidebarMenuButton className="cursor-pointer" onClick={logoutAction}>
                 <LogOut /> Sair
               </SidebarMenuButton>
             </SidebarMenuItem>

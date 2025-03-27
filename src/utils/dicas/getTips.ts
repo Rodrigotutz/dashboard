@@ -12,6 +12,7 @@ export async function getTips(): Promise<Tips[] | Message> {
           select: {
             name: true,
             email: true,
+            type: true,
           },
         },
       },
@@ -25,6 +26,7 @@ export async function getTips(): Promise<Tips[] | Message> {
       userId: tip.userId,
       userName: tip.user.name,
       userEmail: tip.user.email,
+      userType: tip.user.type,
       title: tip.title,
       likes: tip.likes ?? 0,
       dislikes: tip.dislikes ?? 0,

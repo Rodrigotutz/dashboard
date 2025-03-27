@@ -10,14 +10,15 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { CheckCheckIcon, ThumbsDown, ThumbsUpIcon } from "lucide-react";
-import { columns } from "./columns";
+import { CheckCheckIcon, Edit3, ThumbsDown, ThumbsUpIcon, Trash2 } from "lucide-react";
+import { getColumns } from "./columns";
 import NewTip from "@/components/tips/newTip";
 import { Tips } from "@/types/tips";
 import { getTips } from "@/utils/dicas/getTips";
 import { toast } from "sonner";
 import { Message } from "@/types/message";
 import registerLike from "@/utils/dicas/registerLike";
+import deleteTip from "@/utils/dicas/deleteTip";
 
 export default function Page() {
   const [data, setData] = useState<Tips[]>([]);
@@ -25,6 +26,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [likedTips, setLikedTips] = useState<{ [key: number]: boolean }>({});
   const [dislikedTips, setDislikedTips] = useState<{ [key: number]: boolean }>({});
+  const [session, setSession] = useState<any>(null);
 
   const handleApiResponse = (result: Tips[] | Message) => {
     if (Array.isArray(result)) {
@@ -35,6 +37,12 @@ export default function Page() {
       });
       setData([]);
     }
+  };
+
+  const fetchSession = async () => {
+    const res = await fetch("/api/auth/session");
+    const sessionData = await res.json();
+    setSession(sessionData);
   };
 
   const fetchTips = async () => {
@@ -52,13 +60,13 @@ export default function Page() {
   };
 
   useEffect(() => {
+    fetchSession();
     fetchTips();
   }, []);
 
   const handleNewTipAdded = () => {
     fetchTips();
   };
-
 
   const handleLikeDislike = async (tipId: number, type: "like" | "dislike") => {
     try {
@@ -102,7 +110,22 @@ export default function Page() {
     }
   };
 
+  const handleDeleteTip = async (tipId: number) => {
+    try {
+      const result = await deleteTip(tipId);
 
+      if (result.success) {
+        toast.success(result.message);
+        setSelectedTip(null);
+        fetchTips();
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("Erro ao excluir a dica");
+      console.error("Erro ao excluir dica:", error);
+    }
+  };
 
   return (
     <div className="mt-5 dark">
@@ -116,7 +139,25 @@ export default function Page() {
       <Dialog open={!!selectedTip} onOpenChange={() => setSelectedTip(null)}>
         <DialogContent className="md:min-w-6xl max-h-[80vh] md:max-h-[90vh] flex flex-col">
           <DialogHeader className="shrink-0">
-            <DialogTitle className="text-center mb-5">{selectedTip?.title}</DialogTitle>
+            <DialogTitle className="flex items-center">
+              <div className="flex">
+                {session?.user?.type === 'admin' && (
+                  <Button
+                    onClick={() => selectedTip?.id && handleDeleteTip(selectedTip.id)}
+                    variant="link"
+                    className="text-red-500 cursor-pointer hover:text-red-700"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+                <Button variant="link" className="text-blue-500 cursor-pointer hover:text-blue-700">
+                  <Edit3 className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="w-full flex justify-center">
+                {selectedTip?.title}
+              </div>
+            </DialogTitle>
           </DialogHeader>
           <div
             className="prose dark:prose-invert max-w-none 
@@ -146,13 +187,12 @@ export default function Page() {
                 <ThumbsDown />
                 <span>{selectedTip?.dislikes || 0}</span>
               </Button>
-
             </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <DataTable columns={columns} data={data} onRowClick={setSelectedTip} />
+      <DataTable columns={getColumns()} data={data} onRowClick={setSelectedTip} />
     </div>
   );
 }
