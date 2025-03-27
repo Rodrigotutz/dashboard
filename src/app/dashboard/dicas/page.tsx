@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { CheckCheckIcon, Edit3, ThumbsDown, ThumbsUpIcon, Trash2 } from "lucide-react";
 import { getColumns } from "./columns";
-import NewTip from "@/components/tips/newTip";
+import NewTip from "@/components/tips/tipEditor";
 import { Tips } from "@/types/tips";
 import { getTips } from "@/utils/dicas/getTips";
 import { toast } from "sonner";
@@ -141,7 +141,7 @@ export default function Page() {
         <DialogContent className="md:min-w-6xl max-h-[80vh] md:max-h-[90vh] flex flex-col">
           <DialogHeader className="shrink-0">
             <DialogTitle className="flex items-center">
-              <div className="flex">
+              <div className="flex items-center">
                 {session?.user?.type === 'admin' && (
                   <Button
                     onClick={() => selectedTip?.id && handleDeleteTip(selectedTip.id)}
@@ -151,9 +151,14 @@ export default function Page() {
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 )}
-                <Button variant="link" className="text-blue-500 cursor-pointer hover:text-blue-700">
-                  <Edit3 className="h-4 w-4" />
-                </Button>
+                <NewTip
+                  onSuccess={handleNewTipAdded}
+                  tip={selectedTip}
+                  onUpdate={(updatedTip) => {
+                    setSelectedTip(updatedTip);
+                    fetchTips(); 
+                  }}
+                />
               </div>
               <div className="w-full flex justify-center">
                 {selectedTip?.title}
