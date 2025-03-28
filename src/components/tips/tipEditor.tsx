@@ -129,7 +129,7 @@ export default function TipEditor({ onSuccess, tip, onUpdate }: NewTipProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="min-w-4/5 h-[90vh] flex flex-col dark">
+      <DialogContent className="min-w-11/12 h-11/12 flex flex-col dark">
         <DialogHeader>
           <DialogTitle>{tip ? "Editar Dica" : "Cadastre uma nova dica"}</DialogTitle>
         </DialogHeader>
@@ -170,7 +170,7 @@ export default function TipEditor({ onSuccess, tip, onUpdate }: NewTipProps) {
                 onInit={() => setEditorLoading(false)}
                 value={content}
                 init={{
-                  height: 700,
+                  height: 400,
                   menubar: false,
                   plugins: "advlist autolink lists link image charmap preview anchor searchreplace",
                   toolbar: "undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",

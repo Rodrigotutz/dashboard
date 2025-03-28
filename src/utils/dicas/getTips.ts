@@ -1,11 +1,12 @@
 "use server";
 
 import db from "@/lib/db";
-import { Message } from "@/types/message";
 import { Tips } from "@/types/tips";
 
-export async function getTips(): Promise<Tips[] | Message> {
+export async function getTips() {
   try {
+    await db.$connect();
+
     const tips = await db.tips.findMany({
       include: {
         user: {
@@ -24,9 +25,9 @@ export async function getTips(): Promise<Tips[] | Message> {
     const formattedTips: Tips[] = tips.map((tip) => ({
       id: tip.id,
       userId: tip.userId,
-      userName: tip.user.name,
-      userEmail: tip.user.email,
-      userType: tip.user.type,
+      userName: tip.user?.name || "Anônimo",
+      userEmail: tip.user?.email || "",
+      userType: tip.user?.type || "user",
       title: tip.title,
       likes: tip.likes ?? 0,
       dislikes: tip.dislikes ?? 0,
@@ -35,11 +36,9 @@ export async function getTips(): Promise<Tips[] | Message> {
     }));
 
     return formattedTips;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro ao buscar dicas:", error);
-    return {
-      success: false,
-      message: "Falha ao carregar as dicas",
-    };
+  } finally {
+    await db.$disconnect();
   }
 }

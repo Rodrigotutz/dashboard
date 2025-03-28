@@ -1,6 +1,6 @@
 export type Message = {
     success: boolean
-    message: string
+    message?: string
     type?: string
     duration?: number
 }

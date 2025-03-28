@@ -10,13 +10,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { CheckCheckIcon, Edit3, ThumbsDown, ThumbsUpIcon, Trash2 } from "lucide-react";
+import { CheckCheckIcon, ThumbsDown, ThumbsUpIcon, Trash2 } from "lucide-react";
 import { getColumns } from "./columns";
 import NewTip from "@/components/tips/tipEditor";
 import { Tips } from "@/types/tips";
 import { getTips } from "@/utils/dicas/getTips";
 import { toast } from "sonner";
-import { Message } from "@/types/message";
 import registerLike from "@/utils/dicas/registerLike";
 import deleteTip from "@/utils/dicas/deleteTip";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,32 +27,79 @@ export default function Page() {
   const [likedTips, setLikedTips] = useState<{ [key: number]: boolean }>({});
   const [dislikedTips, setDislikedTips] = useState<{ [key: number]: boolean }>({});
   const [session, setSession] = useState<any>(null);
+  const [isOnline, setIsOnline] = useState(true);
 
-  const handleApiResponse = (result: Tips[] | Message) => {
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      toast.dismiss('offline-toast');
+      toast.success('Conexão restabelecida');
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      toast.error('Sem conexão com a internet', {
+        id: 'offline-toast',
+        duration: Infinity,
+      });
+    };
+
+    setIsOnline(navigator.onLine);
+    if (!navigator.onLine) handleOffline();
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const handleApiResponse = (result: any) => {
+    if (!result) {
+      toast.error('Resposta inesperada da API');
+      setData([]);
+      return;
+    }
+
     if (Array.isArray(result)) {
       setData(result);
-    } else {
-      toast[result.success ? "success" : "error"](result.message, {
+    } else if (typeof result === 'object' && result !== null) {
+      toast[result.success ? "success" : "error"](result.message || 'Operação realizada', {
         duration: result.duration || 5000,
       });
+      if (!result.success) setData([]);
+    } else {
+      toast.error('Formato de resposta inválido da API');
       setData([]);
     }
   };
 
   const fetchSession = async () => {
-    const res = await fetch("/api/auth/session");
-    const sessionData = await res.json();
-    setSession(sessionData);
+    try {
+      const res = await fetch("/api/auth/session");
+      const sessionData = await res.json();
+      setSession(sessionData);
+    } catch (error) {
+      toast.error('Falha ao carregar sessão');
+      console.error("Erro ao buscar sessão:", error);
+    }
   };
 
   const fetchTips = async () => {
+    if (!isOnline) {
+      toast.error('Operação não disponível offline');
+      return;
+    }
+
     try {
       setLoading(true);
       const result = await getTips();
       handleApiResponse(result);
     } catch (error) {
       console.error("Erro inesperado:", error);
-      toast.error("Erro inesperado ao processar a requisição");
+      toast.error('Falha ao carregar dicas');
       setData([]);
     } finally {
       setLoading(false);
@@ -63,15 +109,24 @@ export default function Page() {
   useEffect(() => {
     fetchSession();
     fetchTips();
-  }, []);
+  }, [isOnline]);
 
   const handleNewTipAdded = () => {
     fetchTips();
   };
 
   const handleLikeDislike = async (tipId: number, type: "like" | "dislike") => {
+    if (!isOnline) {
+      toast.error('Ação não disponível offline');
+      return;
+    }
+
     try {
-      await registerLike(tipId, type);
+      const result = await registerLike(tipId, type);
+
+      if (!result || !result.success) {
+        throw new Error(result?.message || 'Falha ao registrar like/dislike');
+      }
 
       setData((prevData) =>
         prevData.map((tip) =>
@@ -107,23 +162,28 @@ export default function Page() {
         [tipId]: type === "dislike",
       }));
     } catch (error) {
-      toast.error("Erro ao atualizar like/dislike");
+      toast.error(error instanceof Error ? error.message : 'Erro ao atualizar like/dislike');
     }
   };
 
   const handleDeleteTip = async (tipId: number) => {
+    if (!isOnline) {
+      toast.error('Ação não disponível offline');
+      return;
+    }
+
     try {
       const result = await deleteTip(tipId);
 
-      if (result.success) {
+      if (result?.success) {
         toast.success(result.message);
         setSelectedTip(null);
         fetchTips();
       } else {
-        toast.error(result.message);
+        toast.error(result?.message || 'Falha ao excluir dica');
       }
     } catch (error) {
-      toast.error("Erro ao excluir a dica");
+      toast.error('Erro ao excluir a dica');
       console.error("Erro ao excluir dica:", error);
     }
   };
@@ -156,7 +216,7 @@ export default function Page() {
                   tip={selectedTip}
                   onUpdate={(updatedTip) => {
                     setSelectedTip(updatedTip);
-                    fetchTips(); 
+                    fetchTips();
                   }}
                 />
               </div>
