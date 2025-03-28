@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import logoutAction from "@/utils/auth/logoutAction";
+import logoutAction from "@/actions/auth/logoutAction";
 import { Session } from "@/interfaces/session";
 import { getFirstTwoNames } from "@/utils/getFirstTwoNames";
 import { getInitials } from "@/utils/getInitials";

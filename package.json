@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack -p 3001",
     "build": "prisma generate && next build --no-lint",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "tsx prisma/seeds/index.ts",
+    "prisma:seed": "npm run seed"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "npm run prisma:seed"
   },
   "dependencies": {
     "@auth/core": "^0.38.0",
@@ -82,7 +84,7 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/js-cookie": "^3.0.6",
-    "@types/node": "^20.17.24",
+    "@types/node": "^20.17.28",
     "@types/nodemailer": "^6.4.17",
     "@types/nprogress": "^0.2.3",
     "@types/react": "^18",

@@ -3,7 +3,7 @@ import PassowordInput from "@/components/form/password-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import loginAction from "@/utils/auth/loginAction";
+import loginAction from "@/actions/auth/loginAction";
 import Link from "next/link";
 import { useState } from "react";
 import { BsGearFill } from "react-icons/bs";

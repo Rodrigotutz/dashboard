@@ -4,7 +4,7 @@ import { Message } from "@/types/message";
 import { User } from "@/types/user";
 import db from "@/lib/db";
 import { hashSync } from "bcrypt-ts";
-import { ConfirmRegisterEmail } from "../email/ConfirmRegisterEmail";
+import { ConfirmRegisterEmail } from "../../utils/email/ConfirmRegisterEmail";
 
 async function sendEmail(user: User) {
   if (!user.confirmCode) {

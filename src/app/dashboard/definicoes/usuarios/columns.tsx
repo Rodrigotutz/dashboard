@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import deleteUserAction from "@/utils/auth/deleteUserAction";
+import deleteUserAction from "@/actions/auth/deleteUserAction";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [

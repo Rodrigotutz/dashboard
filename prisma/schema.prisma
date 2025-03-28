@@ -18,6 +18,9 @@ model User {
   confirmCode String?
   type        UserType @default(user)
 
+  themeId Int?
+  theme   Theme? @relation(fields: [themeId], references: [id])
+
   passwordResetTokens PasswordResetToken[]
   RoomUser            RoomUser[]
   Message             Message[]
@@ -31,16 +34,39 @@ enum UserType {
   admin
 }
 
+model Theme {
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
+  primary      String   @default("blue-600")
+  secondary    String   @default("purple-500")
+  background   String   @default("white")
+  surface      String   @default("gray-50")
+  error        String   @default("red-500")
+  onPrimary    String   @default("white")
+  onSecondary  String   @default("white")
+  onBackground String   @default("gray-900")
+  onSurface    String   @default("gray-900")
+  onError      String   @default("white")
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  users User[]
+
+  @@map("themes")
+}
+
 model Tips {
-  id       Int     @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   userId   Int
   title    String
-  likes    Int?    @default(0)
-  dislikes Int?    @default(0)
+  likes    Int?     @default(0)
+  dislikes Int?     @default(0)
   content  String
   public   Boolean? @default(false)
 
   user User @relation(fields: [userId], references: [id])
+
   @@map("tips")
 }
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import registerAction from "@/utils/auth/registerAction";
+import registerAction from "@/actions/auth/registerAction";
 import { toast } from "sonner";
 import PassowordInput from "@/components/form/password-input";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";

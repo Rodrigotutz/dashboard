@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { alterPasswordAction } from "@/utils/auth/alterPasswordAction";
+import { alterPasswordAction } from "@/actions/auth/alterPasswordAction";
 import Form from "next/form";
 import PassowordInputs from "@/components/form/password-input";
 import { useRouter } from "next/navigation";

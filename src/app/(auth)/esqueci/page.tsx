@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { forgetAction } from "@/utils/auth/forgetAction";
+import { forgetAction } from "@/actions/auth/forgetAction";
 import { toast } from "sonner";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useRouter } from "next/navigation";

@@ -16,10 +16,10 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Editor } from "@tinymce/tinymce-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { registerTip } from "@/utils/dicas/registerTips";
 import { toast } from "sonner";
 import { Tips } from "@/types/tips";
-import { updateTip } from "@/utils/dicas/updateTip";
+import { updateTip } from "@/actions/tips/updateTipAction";
+import { registerTip } from "@/actions/tips/registerTipsAction";
 
 interface NewTipProps {
   onSuccess?: () => void;

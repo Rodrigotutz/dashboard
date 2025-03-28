@@ -14,11 +14,11 @@ import { CheckCheckIcon, ThumbsDown, ThumbsUpIcon, Trash2 } from "lucide-react";
 import { getColumns } from "./columns";
 import NewTip from "@/components/tips/tipEditor";
 import { Tips } from "@/types/tips";
-import { getTips } from "@/utils/dicas/getTips";
 import { toast } from "sonner";
-import registerLike from "@/utils/dicas/registerLike";
-import deleteTip from "@/utils/dicas/deleteTip";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getTips } from "@/utils/tips/getTips";
+import registerLike from "@/actions/tips/registerLikeAction";
+import deleteTip from "@/utils/tips/deleteTip";
 
 export default function Page() {
   const [data, setData] = useState<Tips[]>([]);
