@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 async function main() {
   await seedThemes();
   await seedUsers();
-  await seedRooms();
+  //await seedRooms();
 }
 
 main()

@@ -1,0 +1,32 @@
+"use server";
+
+import db from "@/lib/db";
+
+export async function getPublicTipByTitle(title: string) {
+  try {
+    const tip = await db.tips.findFirst({
+      where: {
+        public: true,
+        title: {
+          equals: title,
+          mode: "insensitive",
+        },
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    return tip || null;
+  } catch (error) {
+    console.error("Error fetching public tip:", error);
+    return null;
+  } finally {
+    await db.$disconnect();
+  }
+}

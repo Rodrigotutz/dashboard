@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { CheckCheckIcon, ThumbsDown, ThumbsUpIcon, Trash2 } from "lucide-react";
+import { CheckCheckIcon, Share2Icon, ShareIcon, ThumbsDown, ThumbsUpIcon, Trash2 } from "lucide-react";
 import { getColumns } from "./columns";
 import NewTip from "@/components/tips/tipEditor";
 import { Tips } from "@/types/tips";
@@ -21,6 +21,7 @@ import registerLike from "@/actions/tips/registerLikeAction";
 import deleteTip from "@/utils/tips/deleteTip";
 
 export default function Page() {
+  const [isCopied, setIsCopied] = useState(false);
   const [data, setData] = useState<Tips[]>([]);
   const [selectedTip, setSelectedTip] = useState<Tips | null>(null);
   const [loading, setLoading] = useState(true);
@@ -188,6 +189,21 @@ export default function Page() {
     }
   };
 
+  const handleShareClick = () => {
+    const baseUrl = window.location.origin;
+    const slug = selectedTip?.title
+      .toLowerCase()
+      .replace(/[^\w\s-]/gi, '')
+      .replace(/\s+/g, '-');
+    const shareUrl = `${baseUrl}/dicas/${slug}`;
+
+    navigator.clipboard.writeText(shareUrl);
+    setIsCopied(true);
+    toast.success('Link copiado!' );
+    setTimeout(() => setIsCopied(false), 5000);
+  };
+
+
   return (
     <div className="mt-5 dark">
       <div className="border-b pb-5 flex items-center justify-between">
@@ -211,14 +227,30 @@ export default function Page() {
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 )}
-                <NewTip
-                  onSuccess={handleNewTipAdded}
-                  tip={selectedTip}
-                  onUpdate={(updatedTip) => {
-                    setSelectedTip(updatedTip);
-                    fetchTips();
-                  }}
-                />
+
+                {
+                  (session?.user?.email === selectedTip?.userEmail || session?.user?.type === 'admin') && (
+                    <NewTip
+                      onSuccess={handleNewTipAdded}
+                      tip={selectedTip}
+                      onUpdate={(updatedTip) => {
+                        setSelectedTip(updatedTip);
+                        fetchTips();
+                      }}
+                    />
+                  )
+                }
+
+                {selectedTip?.public ? (
+                  <Button
+                    className="text-sky-400"
+                    variant={'link'}
+                    onClick={handleShareClick}
+                  >
+                    {isCopied ? (<span className="text-green-500 flex gap-1 items-center"><CheckCheckIcon className="h-4 w-4" /> Copiado!</span>) : <Share2Icon />}
+                  </Button>
+                ) : null}
+
               </div>
               <div className="w-full flex justify-center">
                 {selectedTip?.title}
@@ -253,6 +285,7 @@ export default function Page() {
                 <ThumbsDown />
                 <span>{selectedTip?.dislikes || 0}</span>
               </Button>
+
             </div>
           </DialogFooter>
         </DialogContent>

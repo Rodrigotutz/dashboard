@@ -40,13 +40,7 @@ model Theme {
   primary      String   @default("blue-600")
   secondary    String   @default("purple-500")
   background   String   @default("white")
-  surface      String   @default("gray-50")
   error        String   @default("red-500")
-  onPrimary    String   @default("white")
-  onSecondary  String   @default("white")
-  onBackground String   @default("gray-900")
-  onSurface    String   @default("gray-900")
-  onError      String   @default("white")
   isDefault    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

@@ -87,6 +87,7 @@ export default function TipEditor({ onSuccess, tip, onUpdate }: NewTipProps) {
         if (result.data && onUpdate) {
           onUpdate({
             ...result.data,
+            userEmail: tip.userEmail,
             userName: tip.userName
           });
         }
@@ -170,7 +171,7 @@ export default function TipEditor({ onSuccess, tip, onUpdate }: NewTipProps) {
                 onInit={() => setEditorLoading(false)}
                 value={content}
                 init={{
-                  height: 400,
+                  height: 700,
                   menubar: false,
                   plugins: "advlist autolink lists link image charmap preview anchor searchreplace",
                   toolbar: "undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",

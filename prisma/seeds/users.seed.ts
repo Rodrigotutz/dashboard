@@ -14,25 +14,9 @@ export async function seedUsers() {
       confirmed: true,
       confirmCode: null,
       type: "admin",
-      themeId: 1, 
+      themeId: 1,
     },
   });
 
   console.log("Root user created:", root);
-
-  const dummyUsers = Array.from({ length: 10 }).map((_, i) => ({
-    email: `user${i + 1}@mail.com`,
-    name: `Usuário ${i + 1}`,
-    password: hashSync("123456"),
-    confirmed: true,
-    confirmCode: null,
-    themeId: Math.floor(Math.random() * 3) + 1, 
-  }));
-
-  await prisma.user.createMany({
-    data: dummyUsers,
-    skipDuplicates: true,
-  });
-
-  console.log("Dummy users created");
 }

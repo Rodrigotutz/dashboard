@@ -19,5 +19,7 @@ export default async function deleteTip(tipId: Number): Promise<Message> {
     return { success: true, message: "Dica Excluida com sucesso!" };
   } catch (error: any) {
     return { success: false, message: "Não foi possível excluir essa dica!" };
+  } finally {
+    await db.$disconnect();
   }
 }
