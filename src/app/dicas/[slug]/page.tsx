@@ -22,15 +22,16 @@ export default async function Page({
     const cleanHtml = sanitizeHTML(tip.content);
 
     return (
-        <div className="flex flex-col p-10 bg-white text-neutral-800">
-            <article className="h-scren w-4xl mx-auto p-6 flex justify-between flex-col gap-10">
+        <div className="flex flex-col md:p-10 bg-white text-neutral-800">
+            <article className="h-scren max-w-4xl mx-auto p-6 flex justify-between flex-col gap-10">
                 <div>
                     <h1 className="text-3xl font-bold mb-4 pb-2 border-b">{tip.title}</h1>
                     <div
                         className="prose dark:prose-invert max-w-none 
-                                [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
-                              [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700
-                                overflow-y-auto flex-1"
+              [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
+              [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700
+              [&_img]:max-w-full [&_img]:h-auto [&_img]:mx-auto
+              overflow-y-auto flex-1"
                         dangerouslySetInnerHTML={{ __html: cleanHtml }}
                     />
                 </div>
