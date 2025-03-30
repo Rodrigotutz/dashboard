@@ -7,9 +7,10 @@ import "./scrollbar.css";
 export default async function Page({
     params,
 }: {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }) {
-    const title = decodeURIComponent(params.slug).replace(/-/g, ' ');
+    const { slug } = await params
+    const title = decodeURIComponent(slug).replace(/-/g, ' ');
     const tip = await getPublicTipByTitle(title);
 
     if (!tip) {
