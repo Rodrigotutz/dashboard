@@ -25,6 +25,9 @@ import {
   Info,
   UsersRound,
   UserSquare2Icon,
+  WholeWord,
+  WholeWordIcon,
+  Eye,
 } from "lucide-react";
 import {
   Sidebar,
@@ -59,7 +62,12 @@ const items = [
     icon: House,
     size: 20,
   },
-
+  {
+    title: "Dicas",
+    url: "/dicas",
+    icon: CheckCheck,
+    size: 20,
+  },
   {
     title: "Whatsapp",
     url: "/whatsapp",
@@ -87,13 +95,6 @@ const items = [
     icon: BusFront,
     size: 20,
   },
-  {
-    title: "Dicas",
-    url: "/dicas",
-    icon: CheckCheck,
-    size: 20,
-  },
-
   {
     title: "Tarefas",
     url: "/tarefas",
@@ -225,8 +226,21 @@ export function AppSidebar() {
             </SidebarMenu>
           ) : null}
           <SidebarMenu>
+            <Link href={"/"}> <SidebarMenuItem>
+              <SidebarMenuButton
+                className="cursor-pointer"
+
+              >
+                <Eye /> Ver Site
+              </SidebarMenuButton>
+            </SidebarMenuItem></Link>
+          </SidebarMenu>
+          <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton className="cursor-pointer" onClick={logoutAction}>
+              <SidebarMenuButton
+                className="cursor-pointer"
+                onClick={logoutAction}
+              >
                 <LogOut /> Sair
               </SidebarMenuButton>
             </SidebarMenuItem>

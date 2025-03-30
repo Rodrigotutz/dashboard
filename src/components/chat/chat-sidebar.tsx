@@ -32,7 +32,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
@@ -119,7 +118,9 @@ export function ChatSidebar() {
                 ))
               ) : (
                 <SidebarMenuItem className="text-center">
-                  <span className="text-gray-100/30">Nenhuma sala encontrada</span>
+                  <span className="text-gray-100/30">
+                    Nenhuma sala encontrada
+                  </span>
                 </SidebarMenuItem>
               )}
             </SidebarMenu>

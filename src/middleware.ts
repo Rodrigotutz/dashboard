@@ -4,13 +4,13 @@ import { auth } from "@/auth";
 export async function middleware(req: NextRequest) {
   const session = await auth();
 
-  const loginPage = req.nextUrl.pathname === "/";
+  const loginPage = req.nextUrl.pathname === "/login";
   const dashboardPage = req.nextUrl.pathname.startsWith("/dashboard");
   const chatPage = req.nextUrl.pathname.startsWith("/chat");
   const settingsPage = req.nextUrl.pathname.startsWith("/dashboard/definicoes");
 
   if (!session && (dashboardPage || chatPage)) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   if (session && loginPage) {
@@ -25,5 +25,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/chat/:path*"],
+  matcher: ["/login", "/dashboard/:path*", "/chat/:path*"],
 };

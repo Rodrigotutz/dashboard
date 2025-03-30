@@ -67,7 +67,7 @@ export default function Page() {
       }
 
       toast.success(result.message);
-      router.push("/");
+      router.push("/login");
     });
   };
 

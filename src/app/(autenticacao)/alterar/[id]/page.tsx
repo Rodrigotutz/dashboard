@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   });
 
   if (!result) {
-    redirect("/");
+    redirect("/login");
   }
 
   const user = result.user;

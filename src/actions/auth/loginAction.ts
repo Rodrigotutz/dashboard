@@ -50,5 +50,4 @@ export default async function loginAction(
     return { success: false, message: "Tente novamente mais tarde!" };
   }
 
-  return { success: true, message: "Usuario Cadastrado com Sucesso" };
 }
