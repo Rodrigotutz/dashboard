@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { CheckCheckIcon, Share2Icon, ShareIcon, ThumbsDown, ThumbsUpIcon, Trash2 } from "lucide-react";
+import { CheckCheckIcon, Share2Icon, ThumbsDown, ThumbsUpIcon, Trash2 } from "lucide-react";
 import { getColumns } from "./columns";
 import NewTip from "@/components/tips/tipEditor";
 import { Tips } from "@/@types/tips";
@@ -167,10 +167,10 @@ export default function Page() {
 
 
   return (
-    <div className="mt-5 dark">
+    <div className="mt-5">
       <div className="border-b pb-5 flex items-center justify-between">
         <h2 className="font-bold text-xl flex items-center gap-2">
-          <CheckCheckIcon /> Dicas do Sistema
+          <CheckCheckIcon /> Dicas
         </h2>
         <NewTip onSuccess={handleNewTipAdded} />
       </div>

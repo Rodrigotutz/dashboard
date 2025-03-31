@@ -10,10 +10,11 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { toast } from "sonner";
 import { getSmtpConfig } from "@/@utils/email/getSmtpConfig";
 import { testSmtpConnection } from "@/@utils/email/testSmtp";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [fetching, setFetching] = useState<boolean>(true);
+  const [fetching, setFetching] = useState<boolean>(false);
   const [testing, setTesting] = useState(false);
   const [formData, setFormData] = useState({
     host: "",
@@ -124,11 +125,45 @@ export default function Page() {
       </div>
 
       {fetching ? (
-        <div className="min-h-[60vh] flex items-center justify-center">
-          <h2 className="text-2xl font-bold">Carregando dados...</h2>
+        <div className="mt-5 p-10">
+          <div className="flex flex-col md:flex-row gap-10">
+            <div className="w-full">
+              <Label className="mb-1">
+                Host:
+              </Label>
+              <Skeleton className=" h-10" />
+            </div>
+            <div className="w-full">
+              <Label className="mb-1">
+                Senha:
+              </Label>
+              <Skeleton className=" h-10" />
+            </div>
+            <div className="md:w-1/3">
+              <Label className="mb-1">
+                Porta:
+              </Label>
+              <Skeleton className="h-10" />
+            </div>
+          </div>
+          <div className="mt-8 flex flex-col md:flex-row gap-10">
+            <div className="w-full">
+              <Label className="mb-1">Nome:</Label>
+              <Skeleton className="w-full h-10" />
+            </div>
+
+            <div className="w-full">
+              <Label className="mb-1">Email:</Label>
+              <Skeleton className="w-full h-10" />
+            </div>
+          </div>
+
+          <div className="text-end mt-20 flex justify-end">
+            <Skeleton className="w-44 h-10" />
+          </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="mt-10 bg-white/5 p-10 rounded-lg">
+        <form onSubmit={handleSubmit} className="mt-5 p-10">
           <div className="flex flex-col md:flex-row gap-10">
             <div className="mb-5 w-full">
               <Label htmlFor="host" className="mb-1">

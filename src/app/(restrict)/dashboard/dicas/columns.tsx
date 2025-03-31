@@ -1,7 +1,6 @@
 import { Tips } from "@/@types/tips";
 import { ColumnDef } from "@tanstack/react-table";
-import { LockKeyhole, LockKeyholeOpen, Share, Share2Icon, ShareIcon } from "lucide-react";
-import { BsShare } from "react-icons/bs";
+import { LockKeyhole, LockKeyholeOpen  } from "lucide-react";
 
 export const getColumns = (): ColumnDef<Tips>[] => {
   const columns: ColumnDef<Tips>[] = [

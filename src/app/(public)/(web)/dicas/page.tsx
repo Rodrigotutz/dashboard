@@ -53,7 +53,7 @@ export default function Page() {
                 </div>
                 <div className="overflow-hidden">
                     <Skeleton className="h-12 w-full bg-neutral-400 rounded-t-lg rounded-b-none" />
-                    <Skeleton className="h-20 w-full bg-neutral-300 rounded-t-none" />
+                    <Skeleton className="h-80 w-full bg-neutral-300 rounded-t-none" />
                 </div>
             </div>
         );

@@ -28,6 +28,7 @@ import {
   WholeWord,
   WholeWordIcon,
   Eye,
+  Newspaper,
 } from "lucide-react";
 import {
   Sidebar,
@@ -52,8 +53,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { AiOutlineLoading3Quarters, AiOutlineWhatsApp } from "react-icons/ai";
-import { BsCash, BsGear } from "react-icons/bs";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { BsGear } from "react-icons/bs";
 
 const items = [
   {
@@ -69,45 +70,51 @@ const items = [
     size: 20,
   },
   {
-    title: "Whatsapp",
-    url: "/whatsapp",
-    icon: AiOutlineWhatsApp,
+    title: "Postagens",
+    url: "/postagens",
+    icon: Newspaper,
     size: 20,
   },
-
-  {
-    title: "Clientes",
-    url: "/clientes",
-    icon: UserSquare2Icon,
-    size: 20,
-  },
-
-  {
-    title: "Prestação",
-    url: "/contas",
-    icon: BsCash,
-    size: 20,
-  },
-
-  {
-    title: "Viagens",
-    url: "/viagens",
-    icon: BusFront,
-    size: 20,
-  },
-  {
-    title: "Tarefas",
-    url: "/tarefas",
-    icon: BookCheck,
-    size: 20,
-  },
-
-  {
-    title: "Avisos",
-    url: "/info",
-    icon: Info,
-    size: 20,
-  },
+  /** {
+     title: "Whatsapp",
+     url: "/whatsapp",
+     icon: AiOutlineWhatsApp,
+     size: 20,
+   },
+ 
+   {
+     title: "Clientes",
+     url: "/clientes",
+     icon: UserSquare2Icon,
+     size: 20,
+   },
+ 
+   {
+     title: "Prestação",
+     url: "/contas",
+     icon: BsCash,
+     size: 20,
+   },
+ 
+   {
+     title: "Viagens",
+     url: "/viagens",
+     icon: BusFront,
+     size: 20,
+   },
+   {
+     title: "Tarefas",
+     url: "/tarefas",
+     icon: BookCheck,
+     size: 20,
+   },
+ 
+   {
+     title: "Avisos",
+     url: "/info",
+     icon: Info,
+     size: 20,
+   }, */
 ];
 
 export function AppSidebar() {
@@ -198,13 +205,13 @@ export function AppSidebar() {
                           </SidebarMenuButton>
                         </Link>
                       </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
+                      {/**  <SidebarMenuSubItem>
                         <Link href={"/dashboard/definicoes/autenticacao"}>
                           <SidebarMenuButton className="cursor-pointer">
                             <LockKeyhole size={20} /> Autenticação
                           </SidebarMenuButton>
                         </Link>
-                      </SidebarMenuSubItem>
+                      </SidebarMenuSubItem> */}
                       <SidebarMenuSubItem>
                         <Link href={"/dashboard/definicoes/email"}>
                           <SidebarMenuButton className="cursor-pointer">
