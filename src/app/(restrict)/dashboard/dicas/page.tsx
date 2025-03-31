@@ -28,34 +28,7 @@ export default function Page() {
   const [likedTips, setLikedTips] = useState<{ [key: number]: boolean }>({});
   const [dislikedTips, setDislikedTips] = useState<{ [key: number]: boolean }>({});
   const [session, setSession] = useState<any>(null);
-  const [isOnline, setIsOnline] = useState(true);
 
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
-      toast.dismiss('offline-toast');
-      toast.success('Conexão restabelecida');
-    };
-
-    const handleOffline = () => {
-      setIsOnline(false);
-      toast.error('Sem conexão com a internet', {
-        id: 'offline-toast',
-        duration: Infinity,
-      });
-    };
-
-    setIsOnline(navigator.onLine);
-    if (!navigator.onLine) handleOffline();
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
 
   const handleApiResponse = (result: any) => {
     if (!result) {
@@ -89,10 +62,6 @@ export default function Page() {
   };
 
   const fetchTips = async () => {
-    if (!isOnline) {
-      toast.error('Operação não disponível offline');
-      return;
-    }
 
     try {
       setLoading(true);
@@ -110,17 +79,13 @@ export default function Page() {
   useEffect(() => {
     fetchSession();
     fetchTips();
-  }, [isOnline]);
+  }, []);
 
   const handleNewTipAdded = () => {
     fetchTips();
   };
 
   const handleLikeDislike = async (tipId: number, type: "like" | "dislike") => {
-    if (!isOnline) {
-      toast.error('Ação não disponível offline');
-      return;
-    }
 
     try {
       const result = await registerLike(tipId, type);
@@ -168,10 +133,7 @@ export default function Page() {
   };
 
   const handleDeleteTip = async (tipId: number) => {
-    if (!isOnline) {
-      toast.error('Ação não disponível offline');
-      return;
-    }
+
 
     try {
       const result = await deleteTip(tipId);
@@ -199,7 +161,7 @@ export default function Page() {
 
     navigator.clipboard.writeText(shareUrl);
     setIsCopied(true);
-    toast.success('Link copiado!' );
+    toast.success('Link copiado!');
     setTimeout(() => setIsCopied(false), 5000);
   };
 
