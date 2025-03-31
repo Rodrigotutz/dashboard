@@ -1,5 +1,6 @@
 "use server";
 
+import { createSlug } from "@/@utils/tips/createSlug";
 import db from "@/lib/db";
 
 export async function updateTip(
