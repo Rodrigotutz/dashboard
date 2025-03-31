@@ -73,11 +73,11 @@ export default function Page() {
             <div className="pb-10">
                 <div className="w-full py-10 bg-neutral-50 flex flex-col items-center justify-center shadow-sm">
                     <h2 className="text-3xl font-bold text-neutral-800 mb-2">Dicas</h2>
-                    <p className="text-neutral-600">Acesse todas as dicas disponíveis no sistema!</p>
+                    <p className="text-sneutral-600">Acesse todas as dicas disponíveis no sistema!</p>
                 </div>
-                <div className="w-full max-w-7xl mx-auto mt-8 p-8 text-center">
-                    <div className="bg-neutral-800 rounded-lg p-8">
-                        <h3 className="text-xl font-medium text-white mb-4">Nenhuma dica encontrada</h3>
+                <div className="w-full max-w-7xl mx-auto mt-8 p-8">
+                    <div className="bg-neutral-800 h-96 flex flex-col items-center justify-center rounded-lg p-8">
+                        <h3 className="text-2xl font-medium text-white mb-4">Nenhuma dica encontrada</h3>
                         <p className="text-neutral-200">No momento não há dicas disponíveis.</p>
                     </div>
                 </div>

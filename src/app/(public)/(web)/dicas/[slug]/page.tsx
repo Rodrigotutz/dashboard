@@ -23,7 +23,7 @@ export default async function Page({
 
   return (
     <div className="flex flex-col md:p-10 bg-white text-neutral-800">
-      <article className="h-scren max-w-4xl mx-auto p-6 flex justify-between flex-col gap-10">
+      <article className="h-scren min-w-4xl max-w-6xl mx-auto p-6 flex justify-between flex-col gap-10">
         <div>
           <h1 className="text-3xl font-bold mb-4 pb-2 border-b">{tip.title}</h1>
           <div

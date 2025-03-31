@@ -54,6 +54,7 @@ model Tips {
   id       Int      @id @default(autoincrement())
   userId   Int
   title    String
+  slug     String   @unique @default("")
   likes    Int?     @default(0)
   dislikes Int?     @default(0)
   content  String
