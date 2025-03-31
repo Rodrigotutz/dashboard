@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { createRoom } from "@/actions/chat/registerRoomAction";
+import { createRoom } from "@/@actions/chat/registerRoomAction";
 import { toast } from "sonner";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 

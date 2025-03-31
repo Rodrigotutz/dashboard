@@ -5,7 +5,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
 import { CgMenuRight } from "react-icons/cg";
 
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/@hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

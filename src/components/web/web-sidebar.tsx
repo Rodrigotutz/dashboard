@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import logoutAction from "@/actions/auth/logoutAction";
+import logoutAction from "@/@actions/auth/logoutAction";
 import { Menu, LayoutDashboard, FileText, LogIn, CheckCheckIcon } from "lucide-react";
 import {
   Sidebar,

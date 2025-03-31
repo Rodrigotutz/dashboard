@@ -3,12 +3,12 @@
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
-import { Session } from "@/interfaces/session";
+import { Session } from "@/@interfaces/session";
 
-import logoutAction from "@/actions/auth/logoutAction";
-import { getFirstTwoNames } from "@/utils/getFirstTwoNames";
+import logoutAction from "@/@actions/auth/logoutAction";
+import { getFirstTwoNames } from "@/@utils/getFirstTwoNames";
 
-import { getInitials } from "@/utils/getInitials";
+import { getInitials } from "@/@utils/getInitials";
 
 import {
   LogOut,

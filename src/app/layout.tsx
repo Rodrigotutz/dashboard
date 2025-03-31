@@ -1,7 +1,7 @@
 "use client";
 
 import "./globals.css";
-import { toast, Toaster } from "sonner";
+import { Toaster } from "sonner";
 import { ProgressProvider } from "@bprogress/next/app";
 
 export default function RootLayout({
@@ -10,8 +10,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
-      <body className="dark bg-neutral-900">
+    <html lang="pt-br" className="dark">
+      <body>
         <ProgressProvider
           color="#fff"
           options={{ showSpinner: false }}

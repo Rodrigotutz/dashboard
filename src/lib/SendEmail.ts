@@ -1,7 +1,7 @@
 import { createTransport } from "nodemailer";
 import { render } from "@react-email/render";
 import React from "react";
-import { getSmtpConfig } from "@/utils/email/getSmtpConfig";
+import { getSmtpConfig } from "@/@utils/email/getSmtpConfig";
 
 interface SmtpConfig {
   host: string;

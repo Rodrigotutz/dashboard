@@ -17,9 +17,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Editor } from "@tinymce/tinymce-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Tips } from "@/types/tips";
-import { updateTip } from "@/actions/tips/updateTipAction";
-import { registerTip } from "@/actions/tips/registerTipsAction";
+import { Tips } from "@/@types/tips";
+import { updateTip } from "@/@actions/tips/updateTipAction";
+import { registerTip } from "@/@actions/tips/registerTipsAction";
 
 interface NewTipProps {
   onSuccess?: () => void;

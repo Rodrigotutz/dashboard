@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import logoutAction from "@/actions/auth/logoutAction";
-import { Session } from "@/interfaces/session";
-import { getFirstTwoNames } from "@/utils/getFirstTwoNames";
-import { getInitials } from "@/utils/getInitials";
-import { getRooms } from "@/utils/chat/getRooms";
+import logoutAction from "@/@actions/auth/logoutAction";
+import { Session } from "@/@interfaces/session";
+import { getFirstTwoNames } from "@/@utils/getFirstTwoNames";
+import { getInitials } from "@/@utils/getInitials";
+import { getRooms } from "@/@utils/chat/getRooms";
 import { CreateRoomDialog } from "@/components/chat/create-room-dialog";
 
 import {
