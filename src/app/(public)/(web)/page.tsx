@@ -11,7 +11,6 @@ export default function Page() {
   return (
     <div>
       <div className="">
-        <h2>Inicio</h2>
       </div>
     </div>
   );

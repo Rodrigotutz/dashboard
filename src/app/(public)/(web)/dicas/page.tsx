@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Tips } from "@/@types/tips";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTips } from "@/@utils/tips/getTips";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const extractFirstLineText = (html: string) => {
@@ -33,6 +32,7 @@ export default function Page() {
     const router = useRouter();
     const [tips, setTips] = useState<Tips[]>([]);
     const [loading, setLoading] = useState(true);
+    const [redirect, setRedirect] = useState(false)
 
     useEffect(() => {
         const fetchTips = async () => {
@@ -47,7 +47,8 @@ export default function Page() {
     }, []);
 
     const handleRowClick = (title: string) => {
-        router.push(`/dicas/${createSlug(title)}`);
+        setRedirect(true)
+        router.push(`/dicas/${title}`);
     };
 
     if (loading) {
@@ -90,36 +91,44 @@ export default function Page() {
             </div>
 
             <div className="w-full max-w-7xl mx-auto mt-8 rounded-lg overflow-hidden shadow-md">
-                <table className="w-full table-fixed">
-                    <thead>
-                        <tr className="bg-neutral-700 text-white">
-                            <th className="w-[25%] px-6 py-3 text-left font-medium">Título:</th>
-                            <th className="w-[45%] px-6 py-3 text-left">Descrição:</th>
-                            <th className="w-[15%] px-6 py-3 text-left">Autor:</th>
-                            <th className="w-[15%] px-6 py-3 text-left">Data:</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tips.map((tip, index) => (
-                            <tr
-                                key={tip.id}
-                                onClick={() => handleRowClick(tip.title)}
-                                className={`min-h-16 hover:bg-blue-100 cursor-pointer ${index % 2 === 0 ? 'bg-neutral-200' : 'bg-white'}`}
-                            >
-                                <td className="px-6 py-4 font-medium text-neutral-800 truncate">
-                                    {tip.title}
-                                </td>
-                                <td className="px-6 py-4 text-sm text-neutral-600 truncate">
-                                    {extractFirstLineText(tip.content).substring(0, 100)}{extractFirstLineText(tip.content).length > 100 && '...'}
-                                </td>
-                                <td className="px-6 py-4 text-neutral-700 truncate">{tip.userName}</td>
-                                <td className="px-6 py-4 text-neutral-500 truncate">
-                                    {new Date(tip.createdAt || new Date()).toLocaleDateString('pt-BR')}
-                                </td>
+
+                {!redirect ? (
+                    <table className="w-full table-fixed">
+                        <thead>
+                            <tr className="bg-neutral-700 text-white">
+                                <th className="w-[25%] px-6 py-3 text-left font-medium">Título:</th>
+                                <th className="w-[45%] px-6 py-3 text-left">Descrição:</th>
+                                <th className="w-[15%] px-6 py-3 text-left">Autor:</th>
+                                <th className="w-[15%] px-6 py-3 text-left">Data:</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            {tips.map((tip, index) => (
+                                <tr
+                                    key={tip.id}
+                                    onClick={() => handleRowClick(tip.title)}
+                                    className={`min-h-16 hover:bg-blue-100 cursor-pointer ${index % 2 === 0 ? 'bg-neutral-200' : 'bg-white'}`}
+                                >
+                                    <td className="px-6 py-4 font-medium text-neutral-800 truncate">
+                                        {tip.title}
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-neutral-600 truncate">
+                                        {extractFirstLineText(tip.content).substring(0, 100)}{extractFirstLineText(tip.content).length > 100 && '...'}
+                                    </td>
+                                    <td className="px-6 py-4 text-neutral-700 truncate">{tip.userName}</td>
+                                    <td className="px-6 py-4 text-neutral-500 truncate">
+                                        {new Date(tip.createdAt || new Date()).toLocaleDateString('pt-BR')}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>)
+                    : (
+                        <div className="h-26 bg-neutral-100 w-full flex items-center justify-center">
+                            <h2 className="text-xl text-center">Acessando Dica...</h2>
+                        </div>
+                    )}
             </div>
         </div>
     );
