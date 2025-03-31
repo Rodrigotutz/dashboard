@@ -1,5 +1,6 @@
 "use server";
 
+import { createSlug } from "@/@utils/tips/createSlug";
 import db from "@/lib/db";
 
 export async function registerTip(tipData: {
@@ -20,6 +21,7 @@ export async function registerTip(tipData: {
       data: {
         userId: tipData.userId,
         title: tipData.title,
+        slug: createSlug(tipData.title),
         content: tipData.content,
         public: tipData.public ?? false,
       },

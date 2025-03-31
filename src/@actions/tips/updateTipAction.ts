@@ -33,6 +33,7 @@ export async function updateTip(
       where: { id: tipId },
       data: {
         title: tipData.title,
+        slug: createSlug(tipData.title),
         content: tipData.content,
         public: tipData.public ?? existingTip.public,
       },

@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getTips } from "@/@utils/tips/getTips";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createSlug } from "@/@utils/tips/createSlug";
 
 const extractFirstLineText = (html: string) => {
     const tempDiv = document.createElement('div');
@@ -20,16 +21,6 @@ const extractFirstLineText = (html: string) => {
     return '';
 };
 
-const createSlug = (text: string) => {
-    return text
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/--+/g, '-')
-        .trim();
-};
 export default function Page() {
     const router = useRouter();
     const [tips, setTips] = useState<Tips[]>([]);
