@@ -88,8 +88,8 @@ export default function Page() {
     return (
         <div className="pb-10">
             <div className="w-full py-10 bg-neutral-50 flex flex-col items-center justify-center shadow-sm">
-                <h2 className="text-3xl font-bold text-neutral-800 mb-2">Dicas Públicas</h2>
-                <p className="text-neutral-600">Acesse todas as dicas públicas disponíveis no sistema!</p>
+                <h2 className="text-3xl font-bold text-neutral-800 mb-2">Dicas</h2>
+                <p className="text-neutral-600">Acesse todas as dicas disponíveis no sistema!</p>
             </div>
 
             <div className="w-full max-w-7xl mx-auto mt-8 rounded-lg overflow-hidden shadow-md">
