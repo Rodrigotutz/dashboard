@@ -14,7 +14,7 @@ export default function RootLayout({
       <body>
         <ProgressProvider
           color="#fff"
-          height="5px"
+          height="4px"
           options={{ showSpinner: false }}
           shallowRouting
         >

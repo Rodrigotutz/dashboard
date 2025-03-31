@@ -35,15 +35,15 @@ enum UserType {
 }
 
 model Theme {
-  id           Int      @id @default(autoincrement())
-  name         String   @unique
-  primary      String   @default("blue-600")
-  secondary    String   @default("purple-500")
-  background   String   @default("white")
-  error        String   @default("red-500")
-  isDefault    Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  primary    String   @default("blue-600")
+  secondary  String   @default("purple-500")
+  background String   @default("white")
+  error      String   @default("red-500")
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   users User[]
 

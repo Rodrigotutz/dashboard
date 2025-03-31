@@ -12,9 +12,12 @@ export default async function Page({
   const title = decodeURIComponent(slug).replace(/-/g, " ");
   const tip = await getPublicTipByTitle(title);
 
+  console.log(tip)
+
   if (!tip) {
     return notFound();
   }
+
 
   const cleanHtml = sanitizeHTML(tip.content);
 
