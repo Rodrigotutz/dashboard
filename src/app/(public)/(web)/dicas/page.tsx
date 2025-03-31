@@ -1,19 +1,92 @@
 "use client";
+import { useEffect, useState } from "react";
+import { Tips } from "@/@types/tips";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getTips } from "@/@utils/tips/getTips";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+const extractFirstLineText = (html: string) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const validTags = ['p', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'section'];
+
+    for (const tag of validTags) {
+        const element = tempDiv.querySelector(tag);
+        if (element && element.textContent?.trim()) {
+            return element.textContent.trim();
+        }
+    }
+    return '';
+};
+
+const createSlug = (text: string) => {
+    return text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
+        .trim();
+};
 
 export default function Page() {
-    const tips = Array(10).fill(null).map((_, index) => ({
-        id: index + 1,
-        title: `Dica ${index + 1}: Como usar o SCPI`,
-        publishedBy: `Rodrigo Tutz`,
-        date: new Date().toLocaleDateString('pt-BR'),
-        content: `Esta dica explica como utilizar o recurso ${index + 1} de forma otimizada para melhorar seu fluxo de trabalho.`
-    }));
+    const router = useRouter();
+    const [tips, setTips] = useState<Tips[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTips = async () => {
+            const data = await getTips();
+            if (data) {
+                const publicTips = data.filter(tip => tip.public === true);
+                setTips(publicTips);
+            }
+            setLoading(false);
+        };
+        fetchTips();
+    }, []);
+
+    const handleRowClick = (title: string) => {
+        router.push(`/dicas/${createSlug(title)}`);
+    };
+
+    if (loading) {
+        return (
+            <div className="w-full max-w-7xl mx-auto space-y-4">
+                <div className="mt-10 mb-10 pb-12 border-b text-center">
+                    <h2 className="text-2xl font-bold text-neutral-800 mb-2">Carregando Dicas...</h2>
+                    <p>Aguarde enquanto trago as dicas pra você...</p>
+                </div>
+                <div className="overflow-hidden">
+                    <Skeleton className="h-12 w-full bg-neutral-400 rounded-t-lg rounded-b-none" />
+                    <Skeleton className="h-20 w-full bg-neutral-300 rounded-t-none" />
+                </div>
+            </div>
+        );
+    }
+
+    if (!tips || tips.length === 0) {
+        return (
+            <div className="pb-10">
+                <div className="w-full py-10 bg-neutral-50 flex flex-col items-center justify-center shadow-sm">
+                    <h2 className="text-3xl font-bold text-neutral-800 mb-2">Dicas</h2>
+                    <p className="text-neutral-600">Acesse todas as dicas disponíveis no sistema!</p>
+                </div>
+                <div className="w-full max-w-7xl mx-auto mt-8 p-8 text-center">
+                    <div className="bg-neutral-800 rounded-lg p-8">
+                        <h3 className="text-xl font-medium text-white mb-4">Nenhuma dica encontrada</h3>
+                        <p className="text-neutral-200">No momento não há dicas disponíveis.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="pb-10">
             <div className="w-full py-10 bg-neutral-50 flex flex-col items-center justify-center shadow-sm">
-                <h2 className="text-3xl font-bold text-neutral-800 mb-2">Dicas</h2>
-                <p className="text-neutral-600">Acesse todas as dicas como instalação, configuração e uso dos sistemas!</p>
+                <h2 className="text-3xl font-bold text-neutral-800 mb-2">Dicas Públicas</h2>
+                <p className="text-neutral-600">Acesse todas as dicas públicas disponíveis no sistema!</p>
             </div>
 
             <div className="w-full max-w-7xl mx-auto mt-8 rounded-lg overflow-hidden shadow-md">
@@ -30,12 +103,19 @@ export default function Page() {
                         {tips.map((tip, index) => (
                             <tr
                                 key={tip.id}
+                                onClick={() => handleRowClick(tip.title)}
                                 className={`min-h-16 hover:bg-blue-100 cursor-pointer ${index % 2 === 0 ? 'bg-neutral-200' : 'bg-white'}`}
                             >
-                                <td className="px-6 py-4 font-medium text-neutral-800 truncate">{tip.title}</td>
-                                <td className="px-6 py-4 text-sm text-neutral-600 truncate">{tip.content}</td>
-                                <td className="px-6 py-4 text-neutral-700 truncate">{tip.publishedBy}</td>
-                                <td className="px-6 py-4 text-neutral-500 truncate">{tip.date}</td>
+                                <td className="px-6 py-4 font-medium text-neutral-800 truncate">
+                                    {tip.title}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-neutral-600 truncate">
+                                    {extractFirstLineText(tip.content).substring(0, 100)}{extractFirstLineText(tip.content).length > 100 && '...'}
+                                </td>
+                                <td className="px-6 py-4 text-neutral-700 truncate">{tip.userName}</td>
+                                <td className="px-6 py-4 text-neutral-500 truncate">
+                                    {new Date(tip.createdAt || new Date()).toLocaleDateString('pt-BR')}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

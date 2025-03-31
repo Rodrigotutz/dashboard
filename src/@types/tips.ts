@@ -8,4 +8,5 @@ export type Tips = {
   public?: boolean | null;
   likes?: number | null;
   dislikes?: number | null;
+  createdAt?: Date
 };
