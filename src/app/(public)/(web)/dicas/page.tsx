@@ -4,6 +4,7 @@ import { Tips } from "@/@types/tips";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTips } from "@/@utils/tips/getTips";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const extractFirstLineText = (html: string) => {
     const tempDiv = document.createElement('div');
@@ -22,12 +23,13 @@ const extractFirstLineText = (html: string) => {
 const createSlug = (text: string) => {
     return text
         .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
         .replace(/[^\w\s-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/--+/g, '-')
         .trim();
 };
-
 export default function Page() {
     const router = useRouter();
     const [tips, setTips] = useState<Tips[]>([]);
@@ -92,43 +94,42 @@ export default function Page() {
 
             <div className="w-full max-w-7xl mx-auto mt-8 rounded-lg overflow-hidden shadow-md">
 
-                {!redirect ? (
-                    <table className="w-full table-fixed">
-                        <thead>
-                            <tr className="bg-neutral-700 text-white">
-                                <th className="w-[25%] px-6 py-3 text-left font-medium">Título:</th>
-                                <th className="w-[45%] px-6 py-3 text-left">Descrição:</th>
-                                <th className="w-[15%] px-6 py-3 text-left">Autor:</th>
-                                <th className="w-[15%] px-6 py-3 text-left">Data:</th>
-                            </tr>
-                        </thead>
+                <div className="grid grid-cols-12 bg-neutral-700 text-white">
+                    <div className="col-span-3 px-6 py-3 text-left font-medium">Título:</div>
+                    <div className="col-span-5 px-6 py-3 text-left">Descrição:</div>
+                    <div className="col-span-2 px-6 py-3 text-left">Autor:</div>
+                    <div className="col-span-2 px-6 py-3 text-left">Data:</div>
+                </div>
 
-                        <tbody>
-                            {tips.map((tip, index) => (
-                                <tr
-                                    key={tip.id}
-                                    onClick={() => handleRowClick(tip.title)}
-                                    className={`min-h-16 hover:bg-blue-100 cursor-pointer ${index % 2 === 0 ? 'bg-neutral-200' : 'bg-white'}`}
-                                >
-                                    <td className="px-6 py-4 font-medium text-neutral-800 truncate">
+                <div className="divide-y divide-neutral-300">
+                    {tips.map((tip, index) => {
+                        const slug = createSlug(tip.title);
+                        return (
+                            <Link
+                                key={tip.id}
+                                href={`/dicas/${slug}`}
+                                className={`block w-full hover:bg-blue-100 ${index % 2 === 0 ? 'bg-neutral-200' : 'bg-white'
+                                    }`}
+                            >
+                                <div className="grid grid-cols-12 min-h-16">
+                                    <div className="col-span-3 px-6 py-4 font-medium text-neutral-800 truncate">
                                         {tip.title}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-neutral-600 truncate">
-                                        {extractFirstLineText(tip.content).substring(0, 100)}{extractFirstLineText(tip.content).length > 100 && '...'}
-                                    </td>
-                                    <td className="px-6 py-4 text-neutral-700 truncate">{tip.userName}</td>
-                                    <td className="px-6 py-4 text-neutral-500 truncate">
+                                    </div>
+                                    <div className="col-span-5 px-6 py-4 text-sm text-neutral-600 truncate">
+                                        {extractFirstLineText(tip.content).substring(0, 100)}
+                                        {extractFirstLineText(tip.content).length > 100 && '...'}
+                                    </div>
+                                    <div className="col-span-2 px-6 py-4 text-neutral-700 truncate">
+                                        {tip.userName}
+                                    </div>
+                                    <div className="col-span-2 px-6 py-4 text-neutral-500 truncate">
                                         {new Date(tip.createdAt || new Date()).toLocaleDateString('pt-BR')}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>)
-                    : (
-                        <div className="h-26 bg-neutral-100 w-full flex items-center justify-center">
-                            <h2 className="text-xl text-center">Acessando Dica...</h2>
-                        </div>
-                    )}
+                                    </div>
+                                </div>
+                            </Link>
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );
