@@ -27,7 +27,7 @@ export default function Navbar() {
     {
       href: "/login",
       label: "",
-      icon: <LogIn className="h-5 w-5" />
+      icon: <LogIn className="h-5 w-5" />,
     },
   ];
 
@@ -52,8 +52,8 @@ export default function Navbar() {
             <Link
               key={`center-${index}`}
               href={link.href}
-              className={`transition-colors ${link.icon ? 'flex items-center gap-1' : ''}
-                ${isActive(link.href) ? 'text-white' : 'text-neutral-400 hover:text-white'}
+              className={`transition-colors ${link.icon ? "flex items-center gap-1" : ""}
+                ${isActive(link.href) ? "text-white" : "text-neutral-400 hover:text-white"}
               `}
               prefetch={false}
             >
@@ -68,8 +68,8 @@ export default function Navbar() {
             <Link
               key={`right-${index}`}
               href={link.href}
-              className={`transition-colors ${link.icon ? 'flex items-center gap-1' : ''}
-                ${isActive(link.href) ? 'text-white' : 'text-neutral-400 hover:text-white'}
+              className={`transition-colors ${link.icon ? "flex items-center gap-1" : ""}
+                ${isActive(link.href) ? "text-white" : "text-neutral-400 hover:text-white"}
               `}
               prefetch={false}
             >

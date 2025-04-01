@@ -2,9 +2,9 @@
 
 import db from "@/lib/db";
 
-export async function getPublicTipByTitle(title: string) {
+export async function getPublicPostByTitle(title: string) {
   try {
-    const tip = await db.tips.findFirst({
+    const tip = await db.post.findFirst({
       where: {
         public: true,
         title: {
@@ -24,7 +24,7 @@ export async function getPublicTipByTitle(title: string) {
 
     return tip || null;
   } catch (error) {
-    console.error("Error fetching public tip:", error);
+    console.error("Erro ao procurar por postagem:", error);
     return null;
   } finally {
     await db.$disconnect();

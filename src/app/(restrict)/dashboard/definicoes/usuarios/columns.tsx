@@ -34,7 +34,7 @@ export const getColumns = (onDeleteSuccess: () => void): ColumnDef<User>[] => [
         if (selectedUsers.length === 0) return;
 
         const results = await Promise.all(
-          selectedUsers.map((id) => deleteUserAction(id))
+          selectedUsers.map((id) => deleteUserAction(id)),
         );
 
         const successCount = results.filter((r) => r.success).length;

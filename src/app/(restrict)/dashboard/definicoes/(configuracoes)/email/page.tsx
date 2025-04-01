@@ -128,21 +128,15 @@ export default function Page() {
         <div className="mt-5 p-10">
           <div className="flex flex-col md:flex-row gap-10">
             <div className="w-full">
-              <Label className="mb-1">
-                Host:
-              </Label>
+              <Label className="mb-1">Host:</Label>
               <Skeleton className=" h-10" />
             </div>
             <div className="w-full">
-              <Label className="mb-1">
-                Senha:
-              </Label>
+              <Label className="mb-1">Senha:</Label>
               <Skeleton className=" h-10" />
             </div>
             <div className="md:w-1/3">
-              <Label className="mb-1">
-                Porta:
-              </Label>
+              <Label className="mb-1">Porta:</Label>
               <Skeleton className="h-10" />
             </div>
           </div>

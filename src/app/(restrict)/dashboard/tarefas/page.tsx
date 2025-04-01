@@ -1,5 +1,7 @@
-export default function Page(){
-    return(
-        <div className="h-[90vh] flex justify-center items-center text-4xl font-bold">Tarefas</div>
-    )
+export default function Page() {
+  return (
+    <div className="h-[90vh] flex justify-center items-center text-4xl font-bold">
+      Tarefas
+    </div>
+  );
 }

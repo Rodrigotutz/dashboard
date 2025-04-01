@@ -4,7 +4,7 @@ import { Message } from "@/@types/message";
 import db from "@/lib/db";
 
 export default async function verifyCodeAction(
-  formData: FormData
+  formData: FormData,
 ): Promise<Message> {
   const entries = Array.from(formData.entries());
   const data = Object.fromEntries(entries) as { code: string };

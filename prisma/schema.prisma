@@ -24,7 +24,7 @@ model User {
   passwordResetTokens PasswordResetToken[]
   RoomUser            RoomUser[]
   Message             Message[]
-  tips                Tips[]
+  tips                Post[]
 
   @@map("users")
 }
@@ -50,7 +50,18 @@ model Theme {
   @@map("themes")
 }
 
-model Tips {
+model Category {
+  id        Int       @id @default(autoincrement())
+  title     String    @unique
+  label     String
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
+}
+
+model Post {
   id       Int      @id @default(autoincrement())
   userId   Int
   title    String
@@ -60,9 +71,11 @@ model Tips {
   content  String
   public   Boolean? @default(false)
 
-  user User @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
+  Category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
 
-  @@map("tips")
+  @@map("posts")
 }
 
 model PasswordResetToken {

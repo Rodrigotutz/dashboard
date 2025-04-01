@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -29,7 +29,7 @@ export default function Page() {
 
     toast.success(result.message);
     setLoading(false);
-    router.push("/login")
+    router.push("/login");
   };
 
   return (

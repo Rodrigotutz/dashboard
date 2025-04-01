@@ -4,7 +4,7 @@ import { Message } from "@/@types/message";
 import db from "@/lib/db";
 
 export default async function deleteUserAction(
-  userId: number
+  userId: number,
 ): Promise<Message> {
   if (!userId) {
     return { success: false, message: "ID do usuário não fornecido" };

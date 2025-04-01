@@ -4,7 +4,8 @@ import { hashSync } from "bcrypt-ts";
 const prisma = new PrismaClient();
 
 export async function seedUsers() {
-  const root = await prisma.user.upsert({
+  console.log("🌱 Iniciando seed do usuario root...");
+  await prisma.user.upsert({
     where: { email: process.env.ROOT_DATABASE_EMAIL || "root@mail.com" },
     update: {},
     create: {
@@ -18,5 +19,5 @@ export async function seedUsers() {
     },
   });
 
-  console.log("Root user created:", root);
+  console.log("✅ Usuario root criado com sucesso:");
 }

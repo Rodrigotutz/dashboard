@@ -11,7 +11,7 @@ export class ConfirmRegisterEmail {
           username: username,
           email: email,
           confirmCode: confirmCode,
-        })
+        }),
       );
 
       await sendEmail.sendEmail(email, "Confirme seu email", html);

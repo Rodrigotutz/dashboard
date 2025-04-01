@@ -5,7 +5,7 @@ import db from "@/lib/db";
 import { Message } from "@/@types/message";
 
 export default async function loginAction(
-  formData: FormData
+  formData: FormData,
 ): Promise<Message> {
   const entries = Array.from(formData.entries());
 
@@ -49,5 +49,4 @@ export default async function loginAction(
 
     return { success: false, message: "Tente novamente mais tarde!" };
   }
-
 }

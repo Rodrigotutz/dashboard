@@ -20,7 +20,7 @@ type PromiseTResult<Data = any> =
   | string
   | React.ReactNode
   | ((
-      data: Data
+      data: Data,
     ) => React.ReactNode | string | Promise<React.ReactNode | string>);
 type PromiseExternalToast = Omit<ExternalToast, "description">;
 type PromiseData<ToastData = any> = PromiseExternalToast & {
@@ -151,35 +151,35 @@ type ExternalToast = Omit<
 type titleT = (() => React.ReactNode) | React.ReactNode;
 declare const toast: ((
   message: titleT,
-  data?: ExternalToast
+  data?: ExternalToast,
 ) => string | number) & {
   success: (
     message: titleT | React.ReactNode,
-    data?: ExternalToast
+    data?: ExternalToast,
   ) => string | number;
   info: (
     message: titleT | React.ReactNode,
-    data?: ExternalToast
+    data?: ExternalToast,
   ) => string | number;
   warning: (
     message: titleT | React.ReactNode,
-    data?: ExternalToast
+    data?: ExternalToast,
   ) => string | number;
   error: (
     message: titleT | React.ReactNode,
-    data?: ExternalToast
+    data?: ExternalToast,
   ) => string | number;
   custom: (
     jsx: (id: number | string) => React.ReactElement,
-    data?: ExternalToast
+    data?: ExternalToast,
   ) => string | number;
   message: (
     message: titleT | React.ReactNode,
-    data?: ExternalToast
+    data?: ExternalToast,
   ) => string | number;
   promise: <ToastData>(
     promise: PromiseT<ToastData>,
-    data?: PromiseData<ToastData>
+    data?: PromiseData<ToastData>,
   ) =>
     | (string & {
         unwrap: () => Promise<ToastData>;
@@ -193,7 +193,7 @@ declare const toast: ((
   dismiss: (id?: number | string) => string | number;
   loading: (
     message: titleT | React.ReactNode,
-    data?: ExternalToast
+    data?: ExternalToast,
   ) => string | number;
 } & {
   getHistory: () => (ToastT | ToastToDismiss)[];

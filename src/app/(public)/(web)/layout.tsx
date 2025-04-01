@@ -22,7 +22,9 @@ export default function Layout({
           <WebSidebar />
         </aside>
 
-        <main className="light w-full bg-white text-neutral-800 pt-5 md:pt-0">{children}</main>
+        <main className="light w-full bg-white text-neutral-800 pt-5 md:pt-0">
+          {children}
+        </main>
       </SidebarProvider>
     </div>
   );

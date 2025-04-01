@@ -33,7 +33,7 @@ export default function PasswordInputs({
 
   return (
     <div>
-      <Label htmlFor="password" className="mb-1">
+      <Label htmlFor="password" className="mb-2">
         Senha:
       </Label>
       <div className="relative">

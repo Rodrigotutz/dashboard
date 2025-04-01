@@ -45,7 +45,7 @@ export default function RegisterUser({
       toast.error(result.message);
       setLoading(false);
       router.push("/confirmar");
-      return
+      return;
     }
 
     if (!result.success) {
@@ -99,12 +99,12 @@ export default function RegisterUser({
         />
       </div>
 
-      <PassowordInput disabled={loading} />
+      <PassowordInput placeholder="teste" disabled={loading} />
 
       {isAdmin ? (
         <div className="flex gap-2 mt-5">
           <Checkbox name="admin" id="admin" />
-          <Label htmlFor="admin" >Administrador</Label>
+          <Label htmlFor="admin">Administrador</Label>
         </div>
       ) : (
         ""

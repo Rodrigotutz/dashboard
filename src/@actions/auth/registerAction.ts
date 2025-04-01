@@ -20,7 +20,7 @@ async function sendEmail(user: User) {
 
 export default async function registerAction(
   formData: FormData,
-  isAdmin: boolean = false
+  isAdmin: boolean = false,
 ): Promise<Message> {
   const entries = Array.from(formData.entries());
 
@@ -74,7 +74,7 @@ export default async function registerAction(
       return {
         success: false,
         message: "Não foi possível enviar o email, solicite um novo código",
-        type: 'email-failure'
+        type: "email-failure",
       };
     }
   }

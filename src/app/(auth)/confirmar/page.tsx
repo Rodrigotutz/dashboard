@@ -14,7 +14,7 @@ export default function Page() {
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const value = e.target.value;
     if (/[^0-9]/.test(value)) return;
@@ -30,7 +30,7 @@ export default function Page() {
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
       document.getElementById(`input-${index - 1}`)?.focus();
@@ -72,8 +72,8 @@ export default function Page() {
   };
 
   const handleNewCode = () => {
-    toast.error("Entre em contato com o administrador do sistema")
-  }
+    toast.error("Entre em contato com o administrador do sistema");
+  };
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
@@ -112,8 +112,13 @@ export default function Page() {
             </Button>
           </div>
         </form>
-        <div className="mt-5 text-neutral-500 underline" onClick={handleNewCode}>
-          <Button variant={"link"} className="text-neutral-700 cursor-pointer">Solicitar novo código</Button>
+        <div
+          className="mt-5 text-neutral-500 underline"
+          onClick={handleNewCode}
+        >
+          <Button variant={"link"} className="text-neutral-700 cursor-pointer">
+            Solicitar novo código
+          </Button>
         </div>
       </div>
     </div>

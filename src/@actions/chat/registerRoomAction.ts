@@ -10,7 +10,7 @@ interface CreateRoomResponse {
 }
 
 export async function createRoom(
-  formData: FormData
+  formData: FormData,
 ): Promise<CreateRoomResponse> {
   try {
     const name = formData.get("name") as string;
@@ -25,7 +25,7 @@ export async function createRoom(
       },
     });
 
-    if(findRoom) {
+    if (findRoom) {
       return { success: false, message: "Essa sala já existe" };
     }
 

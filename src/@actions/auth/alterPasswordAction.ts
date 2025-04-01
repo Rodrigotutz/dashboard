@@ -5,7 +5,7 @@ import { hashSync } from "bcrypt-ts";
 import { Message } from "@/@types/message";
 
 export async function alterPasswordAction(
-  formData: FormData
+  formData: FormData,
 ): Promise<Message> {
   const entries = Array.from(formData.entries());
 

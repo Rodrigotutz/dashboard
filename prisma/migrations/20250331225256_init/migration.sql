@@ -12,8 +12,49 @@ CREATE TABLE "users" (
     "confirmed" BOOLEAN,
     "confirmCode" TEXT,
     "type" "UserType" NOT NULL DEFAULT 'user',
+    "themeId" INTEGER,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "themes" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "primary" TEXT NOT NULL DEFAULT 'blue-600',
+    "secondary" TEXT NOT NULL DEFAULT 'purple-500',
+    "background" TEXT NOT NULL DEFAULT 'white',
+    "error" TEXT NOT NULL DEFAULT 'red-500',
+    "isDefault" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "themes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "categories" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "posts" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "title" TEXT NOT NULL,
+    "slug" TEXT NOT NULL DEFAULT '',
+    "likes" INTEGER DEFAULT 0,
+    "dislikes" INTEGER DEFAULT 0,
+    "content" TEXT NOT NULL,
+    "public" BOOLEAN DEFAULT false,
+    "categoryId" INTEGER,
+
+    CONSTRAINT "posts_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -74,6 +115,15 @@ CREATE TABLE "messages" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "themes_name_key" ON "themes"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "categories_title_key" ON "categories"("title");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "posts_slug_key" ON "posts"("slug");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "password_reset_tokens_userId_key" ON "password_reset_tokens"("userId");
 
 -- CreateIndex
@@ -87,6 +137,15 @@ CREATE UNIQUE INDEX "rooms_name_key" ON "rooms"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "room_users_roomId_userId_key" ON "room_users"("roomId", "userId");
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_themeId_fkey" FOREIGN KEY ("themeId") REFERENCES "themes"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "posts" ADD CONSTRAINT "posts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "posts" ADD CONSTRAINT "posts_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "password_reset_tokens" ADD CONSTRAINT "password_reset_tokens_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -21,7 +21,7 @@ export async function seedThemes() {
     },
   ];
 
-  console.log("Seeding themes...");
+  console.log("🌱 Iniciando seed dos temas...");
 
   for (const themeData of defaultThemes) {
     await prisma.theme.upsert({
@@ -29,7 +29,6 @@ export async function seedThemes() {
       update: {},
       create: themeData,
     });
-    console.log(`Processed theme: ${themeData.name}`);
   }
 
   {
@@ -46,5 +45,5 @@ export async function seedThemes() {
   }); */
   }
 
-  console.log("Theme seeding completed!");
+  console.log("✅ Temas criados com sucesso");
 }

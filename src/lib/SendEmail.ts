@@ -17,7 +17,7 @@ export class SendEmail {
   private constructor(smtpConfig: SmtpConfig) {
     if (!smtpConfig?.host || !smtpConfig?.port) {
       throw new Error(
-        "Configuração SMTP inválida: host e port são obrigatórios"
+        "Configuração SMTP inválida: host e port são obrigatórios",
       );
     }
     this.smtpConfig = smtpConfig;
@@ -27,7 +27,7 @@ export class SendEmail {
     to: string,
     subject: string,
     html: string,
-    text?: string
+    text?: string,
   ): Promise<void> {
     try {
       const transporter = createTransport({
@@ -71,7 +71,7 @@ export class SendEmail {
 
       if (!smtpConfig || "success" in smtpConfig) {
         throw new Error(
-          smtpConfig?.message || "Configurações SMTP não encontradas"
+          smtpConfig?.message || "Configurações SMTP não encontradas",
         );
       }
 

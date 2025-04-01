@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import logoutAction from "@/@actions/auth/logoutAction";
-import { Menu, LayoutDashboard, FileText, LogIn, CheckCheckIcon } from "lucide-react";
+import {
+  Menu,
+  LayoutDashboard,
+  FileText,
+  LogIn,
+  CheckCheckIcon,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -70,7 +76,7 @@ export function WebSidebar() {
                     asChild
                     className={cn(
                       "hover:bg-neutral-800/50",
-                      isActive(item.url) && "bg-neutral-800 text-white"
+                      isActive(item.url) && "bg-neutral-800 text-white",
                     )}
                   >
                     <Link href={item.url}>

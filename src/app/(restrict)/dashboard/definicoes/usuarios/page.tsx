@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { DataTable } from "@/components/dashboard/data-table";
 import { PlusCircle, UserCogIcon } from "lucide-react";
-import { getColumns } from "./columns"; 
+import { getColumns } from "./columns";
 import { User } from "@/@types/user";
 import { getUsers } from "@/@utils/auth/getUsers";
 import {
@@ -34,7 +34,7 @@ export default function Page() {
     setLoading(false);
   }
 
-  const columns = getColumns(fetchUsers); 
+  const columns = getColumns(fetchUsers);
   return (
     <div className="dark">
       <div className="flex justify-between items-center border-b pb-10">

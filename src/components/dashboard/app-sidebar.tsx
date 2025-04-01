@@ -17,18 +17,11 @@ import {
   ChevronRight,
   Users,
   House,
-  BookCheck,
-  BusFront,
   CheckCheck,
-  LockKeyhole,
   Mail,
-  Info,
-  UsersRound,
-  UserSquare2Icon,
-  WholeWord,
-  WholeWordIcon,
   Eye,
   Newspaper,
+  Info,
 } from "lucide-react";
 import {
   Sidebar,
@@ -75,6 +68,12 @@ const items = [
     icon: Newspaper,
     size: 20,
   },
+  {
+    title: "Avisos",
+    url: "/avisos",
+    icon: Info,
+    size: 20,
+  },
   /** {
      title: "Whatsapp",
      url: "/whatsapp",
@@ -108,13 +107,7 @@ const items = [
      icon: BookCheck,
      size: 20,
    },
- 
-   {
-     title: "Avisos",
-     url: "/info",
-     icon: Info,
-     size: 20,
-   }, */
+**/
 ];
 
 export function AppSidebar() {
@@ -233,14 +226,14 @@ export function AppSidebar() {
             </SidebarMenu>
           ) : null}
           <SidebarMenu>
-            <Link href={"/"}> <SidebarMenuItem>
-              <SidebarMenuButton
-                className="cursor-pointer"
-
-              >
-                <Eye /> Ver Site
-              </SidebarMenuButton>
-            </SidebarMenuItem></Link>
+            <Link href={"/"}>
+              {" "}
+              <SidebarMenuItem>
+                <SidebarMenuButton className="cursor-pointer">
+                  <Eye /> Ver Site
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </Link>
           </SidebarMenu>
           <SidebarMenu>
             <SidebarMenuItem>

@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Chat({ id }: { id: string }) {
   const [messages, setMessages] = useState<{ user: string; text: string }[]>(
-    []
+    [],
   );
   const [message, setMessage] = useState("");
 

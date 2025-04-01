@@ -44,7 +44,7 @@ export class ResetPassword {
       PasswordReset({
         username: username,
         resetLink: resetLink,
-      })
+      }),
     );
 
     await sendEmail.sendEmail(email, "Altere sua senha", html);

@@ -13,10 +13,7 @@ export default function Page() {
       <p className="text-xl text-neutral-800">
         Oops, Não foi possível acessar a página
       </p>
-      <Link
-        href={"/"}
-        className="bg-neutral-800 text-white py-2 px-5 rounded"
-      >
+      <Link href={"/"} className="bg-neutral-800 text-white py-2 px-5 rounded">
         Página Inicial
       </Link>
     </div>

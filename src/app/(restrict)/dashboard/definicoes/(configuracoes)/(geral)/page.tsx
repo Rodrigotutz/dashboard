@@ -20,7 +20,7 @@ export default function Page() {
     fetchThemes();
   }, []);
 
-  console.log(themes)
+  console.log(themes);
 
   return (
     <div className="w-full p-4">
@@ -29,18 +29,24 @@ export default function Page() {
         {themes.map((theme) => (
           <div
             key={theme.id}
-            className={`p-4 rounded-lg shadow-md border ${theme.isDefault ? 'border-blue-500 border-2' : ""} transition-all bg-${theme.background}`}
+            className={`p-4 rounded-lg shadow-md border ${theme.isDefault ? "border-blue-500 border-2" : ""} transition-all bg-${theme.background}`}
           >
-            <div className={`p-2 rounded-md mb-2 font-bold text-center text-${theme.primary}`}>
+            <div
+              className={`p-2 rounded-md mb-2 font-bold text-center text-${theme.primary}`}
+            >
               {theme.name}
             </div>
             <div className="flex gap-2">
-              <div className={`w-6 h-6 rounded-full border bg-${theme.primary}`} />
-              <div className={`w-6 h-6 rounded-full border bg-${theme.primary}`} />
+              <div
+                className={`w-6 h-6 rounded-full border bg-${theme.primary}`}
+              />
+              <div
+                className={`w-6 h-6 rounded-full border bg-${theme.primary}`}
+              />
             </div>
           </div>
         ))}
       </div>
-    </div >
+    </div>
   );
 }

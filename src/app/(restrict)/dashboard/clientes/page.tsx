@@ -1,5 +1,3 @@
 export default function Page() {
-    return (
-        <div>Clientes</div>
-    )
+  return <div>Clientes</div>;
 }

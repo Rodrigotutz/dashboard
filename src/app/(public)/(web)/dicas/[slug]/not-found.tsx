@@ -10,9 +10,7 @@ export default function Page() {
         alt="Página Não Encontrada"
         className="w-44 md:w-[400px]"
       />
-      <p className="text-xl text-neutral-800">
-        Oops, Dica não encontrada
-      </p>
+      <p className="text-xl text-neutral-800">Oops, Dica não encontrada</p>
       <Link
         href={"/dicas"}
         className="bg-blue-800 text-white  py-2 px-5 rounded"

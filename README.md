@@ -81,7 +81,7 @@ npx prisma db seed
 
 - Alterar visual de email
 
-    - Acesse a pasta Packages
+  - Acesse a pasta Packages
 
 ```shell
     cd src/packages/

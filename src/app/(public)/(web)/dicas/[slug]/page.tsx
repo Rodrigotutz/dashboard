@@ -1,5 +1,5 @@
-import { getPublicTipBySlug } from "@/@utils/tips/getPublicTipBySlug";
-import { sanitizeHTML } from "@/@utils/tips/sanitize";
+import { getPublicPostBySlug } from "@/@utils/posts/getPublicPostBySlug";
+import { sanitizeHTML } from "@/@utils/posts/sanitize";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { notFound } from "next/navigation";
 
@@ -9,8 +9,9 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const title = decodeURIComponent(slug);''
-  const tip = await getPublicTipBySlug(title);
+  const title = decodeURIComponent(slug);
+  ("");
+  const tip = await getPublicPostBySlug(title);
 
   if (!tip) {
     return notFound();

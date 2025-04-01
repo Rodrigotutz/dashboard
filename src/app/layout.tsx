@@ -15,14 +15,14 @@ export default function RootLayout({
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
-      toast.dismiss('offline-toast');
-      toast.success('Conexão restabelecida');
+      toast.dismiss("offline-toast");
+      toast.success("Conexão restabelecida");
     };
 
     const handleOffline = () => {
       setIsOnline(false);
-      toast.error('Sem conexão com a internet', {
-        id: 'offline-toast',
+      toast.error("Sem conexão com a internet", {
+        id: "offline-toast",
         duration: Infinity,
       });
     };
@@ -30,15 +30,14 @@ export default function RootLayout({
     setIsOnline(navigator.onLine);
     if (!navigator.onLine) handleOffline();
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
-
 
   return (
     <html lang="pt-br" className="dark">

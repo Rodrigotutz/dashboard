@@ -7,11 +7,13 @@ import { seedThemes } from "./themes.seed";
 import { seedUsers } from "./users.seed";
 import { seedRooms } from "./rooms.seed";
 import { PrismaClient } from "@prisma/client";
+import { seedCategories } from "./seed-categories";
 
 const prisma = new PrismaClient();
 
 async function main() {
   await seedThemes();
+  await seedCategories();
   await seedUsers();
   //await seedRooms();
 }
