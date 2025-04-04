@@ -323,7 +323,7 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="w-full h-[600px] rounded-md overflow-hidden custom-calendar">
+          <div className="w-full border min-h-[600px] overflow-hidden custom-calendar">
             {calendarEvents.length === 0 ? (
               <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                 Sem eventos para exibir
@@ -336,9 +336,9 @@ export default function Page() {
                 events={calendarEvents}
                 height="100%"
                 headerToolbar={{
-                  left: "",
+                  left: "prev",
                   center: "title",
-                  right: "",
+                  right: "next",
                 }}
                 buttonText={{
                   today: "Hoje",
