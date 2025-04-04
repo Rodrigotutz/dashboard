@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { ptBR } from "date-fns/locale";
 import { format, isSameDay } from "date-fns";
 
@@ -84,17 +84,16 @@ function DraggableCard({
 export default function Page() {
   const [date, setDate] = useState<Date | undefined>();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
   const [userCity, setUserCity] = useState("");
   const [tituloMes, setTituloMes] = useState("");
   const [newAlerts, setNewAlerts] = useState<
     { id: string; title: string; description: string; date?: Date }[]
   >([]);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [user, setUser] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
@@ -144,6 +143,26 @@ export default function Page() {
       item.date ? isSameDay(new Date(item.date), selectedDate) : false
     );
   }, [newAlerts, selectedDate]);
+
+  const handleDateClick = (info: { date: Date }) => {
+    // Verifica se é um clique duplo
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = null;
+
+      // Define a data clicada e abre o modal
+      setDate(info.date);
+      setSelectedDate(info.date);
+      setIsOpen(true);
+    } else {
+      // Primeiro clique - aguarda por um possível segundo clique
+      clickTimeoutRef.current = setTimeout(() => {
+        // Se não houver segundo clique dentro do tempo, executa ação de clique único
+        setSelectedDate(info.date);
+        clickTimeoutRef.current = null;
+      }, 300); // Tempo para considerar como clique duplo (300ms)
+    }
+  };
 
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -272,34 +291,36 @@ export default function Page() {
         </div>
 
         <div className="p-5 flex justify-between gap-10">
-          <div className="min-h-[500px] w-2/5 rounded-md border-2 p-5 flex flex-col gap-10">
-            <h3 className="text-center text-lg font-bold flex items-center justify-center gap-1">
+          <div className="h-[600px] w-2/5 rounded-md border-2 p-5 flex flex-col">
+            <h3 className="text-center text-lg font-bold flex items-center justify-center gap-1 mb-5">
               <CalendarIcon size={18} /> Avisos do Dia
             </h3>
-            <SortableContext
-              items={filteredAlerts}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="flex flex-col gap-5 font-bold">
-                {filteredAlerts.length === 0 ? (
-                  <div className="text-center space-y-2">
-                    <p className="text-sm font-medium text-neutral-600">
-                      {selectedDate &&
-                        format(selectedDate, "EEEE',' dd 'de' MMMM", {
-                          locale: ptBR,
-                        })}
-                    </p>
-                    <p className="text-muted-foreground">
-                      Nenhum agendamento encontrado
-                    </p>
-                  </div>
-                ) : (
-                  filteredAlerts.map((item) => (
-                    <DraggableCard key={item.id} item={item} />
-                  ))
-                )}
-              </div>
-            </SortableContext>
+            <div className="overflow-y-auto flex-1 pr-2">
+              <SortableContext
+                items={filteredAlerts}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="flex flex-col gap-5 font-bold">
+                  {filteredAlerts.length === 0 ? (
+                    <div className="text-center space-y-2">
+                      <p className="text-sm font-medium text-neutral-600">
+                        {selectedDate &&
+                          format(selectedDate, "EEEE',' dd 'de' MMMM", {
+                            locale: ptBR,
+                          })}
+                      </p>
+                      <p className="text-muted-foreground">
+                        Nenhum agendamento encontrado
+                      </p>
+                    </div>
+                  ) : (
+                    filteredAlerts.map((item) => (
+                      <DraggableCard key={item.id} item={item} />
+                    ))
+                  )}
+                </div>
+              </SortableContext>
+            </div>
           </div>
 
           <div className="w-full h-[600px] rounded-md overflow-hidden custom-calendar">
@@ -325,9 +346,7 @@ export default function Page() {
                   week: "Semana",
                   day: "Dia",
                 }}
-                dateClick={(info) => {
-                  setSelectedDate(info.date);
-                }}
+                dateClick={handleDateClick}
               />
             )}
           </div>

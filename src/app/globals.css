@@ -193,8 +193,6 @@ i ::-webkit-scrollbar-thumb:hover {
   border-radius: 10px;
 }
 
-
-
 .custom-calendar {
   --fc-border-color: #1d1d1d;
   --fc-daygrid-event-dot-width: 10px;
@@ -203,7 +201,7 @@ i ::-webkit-scrollbar-thumb:hover {
   --fc-button-text-color: #fff;
   --fc-button-hover-bg-color: #333;
   --fc-button-hover-border-color: #333;
-  --fc-today-bg-color: #eee;
+  --fc-today-bg-color: #272727;
   --fc-page-bg-color: #fff;
   --fc-neutral-bg-color: #000000;
   --fc-neutral-text-color: #000;
@@ -212,6 +210,19 @@ i ::-webkit-scrollbar-thumb:hover {
   --fc-event-text-color: #fff;
 }
 
+.custom-calendar .fc-day-today {
+  background-color: var(--fc-today-bg-color) !important;
+}
+
+.custom-calendar .fc-day-today .fc-daygrid-day-number {
+  color: white !important;
+  font-weight: bold;
+}
+
+.custom-calendar .fc-timeGridDay-view .fc-day-today,
+.custom-calendar .fc-timeGridWeek-view .fc-day-today {
+  background-color: var(--fc-today-bg-color) !important;
+}
 .custom-calendar .fc {
   background-color: #fff;
   color: #000;
