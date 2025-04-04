@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { ptBR } from "date-fns/locale";
 import { format, isSameDay } from "date-fns";
 
@@ -94,6 +94,27 @@ export default function Page() {
   const [user, setUser] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const calendarRef = useRef<any>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (calendarRef.current) {
+        const calendarApi = calendarRef.current.getApi();
+        calendarApi.updateSize();
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    const calendarElement = document.querySelector(".custom-calendar");
+
+    if (calendarElement) {
+      resizeObserver.observe(calendarElement);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
@@ -145,28 +166,24 @@ export default function Page() {
   }, [newAlerts, selectedDate]);
 
   const handleDateClick = (info: { date: Date }) => {
-    // Verifica se é um clique duplo
     if (clickTimeoutRef.current) {
       clearTimeout(clickTimeoutRef.current);
       clickTimeoutRef.current = null;
 
-      // Define a data clicada e abre o modal
       setDate(info.date);
       setSelectedDate(info.date);
       setIsOpen(true);
     } else {
-      // Primeiro clique - aguarda por um possível segundo clique
       clickTimeoutRef.current = setTimeout(() => {
-        // Se não houver segundo clique dentro do tempo, executa ação de clique único
         setSelectedDate(info.date);
         clickTimeoutRef.current = null;
-      }, 300); // Tempo para considerar como clique duplo (300ms)
+      }, 300);
     }
   };
 
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <div className="mt-5">
+      <div>
         <div className="pb-5 flex items-center justify-between">
           <h2 className="font-bold text-xl flex items-center gap-2">
             <Info /> Avisos
@@ -323,13 +340,14 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="w-full border min-h-[600px] overflow-hidden custom-calendar">
+          <div className="w-full border-2 rounded-md min-h-[600px] overflow-hidden custom-calendar">
             {calendarEvents.length === 0 ? (
               <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                 Sem eventos para exibir
               </div>
             ) : (
               <FullCalendar
+                ref={calendarRef}
                 plugins={[dayGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
                 locale={ptBrLocale}
@@ -347,6 +365,7 @@ export default function Page() {
                   day: "Dia",
                 }}
                 dateClick={handleDateClick}
+                windowResizeDelay={100}
               />
             )}
           </div>

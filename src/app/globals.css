@@ -210,6 +210,7 @@ i ::-webkit-scrollbar-thumb:hover {
   --fc-event-text-color: #fff;
 }
 
+
 .custom-calendar .fc-day-today {
   background-color: var(--fc-today-bg-color) !important;
 }
