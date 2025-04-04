@@ -19,23 +19,20 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 type PostProps = {
-  type: "dica" | "postagem" | "aviso";
+  type: "dica" | "postagem";
   children: React.ReactNode;
 };
 
 export default function Post({ children, type }: PostProps) {
+  const [isSubmiting, setIsSubmiting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const editorRef = useRef<TinyMCEEditor | null>(null);
 
   const backLink =
-    type === "dica"
-      ? "/dashboard/dicas"
-      : type === "aviso"
-        ? "/dashboard/avisos"
-        : "/dashboard/postagens";
+    type === "dica" ? "/dashboard/dicas" : "/dashboard/postagens";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmiting(true);
   };
 
   useEffect(() => {
@@ -94,9 +91,9 @@ export default function Post({ children, type }: PostProps) {
               Título:
             </Label>
             <Input
+              disabled={isSubmiting}
               id="title"
               name="title"
-              required
               className="bg-white text-neutral-900"
             />
           </div>
@@ -104,20 +101,13 @@ export default function Post({ children, type }: PostProps) {
             <Label htmlFor="cat" className="mb-2">
               Categoria:
             </Label>
-            <Select
-              defaultValue={
-                type === "dica" ? "tip" : type === "aviso" ? "warning" : "post"
-              }
-              disabled
-            >
-              <SelectTrigger className="w-full">
+            <Select defaultValue={type === "dica" ? "tip" : "post"} disabled>
+              <SelectTrigger disabled={isSubmiting} className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent id="cat">
                 {type === "dica" ? (
                   <SelectItem value="tip">Dica</SelectItem>
-                ) : type === "aviso" ? (
-                  <SelectItem value="warning">Aviso</SelectItem>
                 ) : (
                   <SelectItem value="post">Postagem</SelectItem>
                 )}
@@ -130,6 +120,7 @@ export default function Post({ children, type }: PostProps) {
             Descrição:
           </Label>
           <Editor
+            disabled={isSubmiting}
             apiKey="1xncjp6ftmlmfrylsguwag7884pouij37b0tl4mxg7svqjoa"
             init={{
               height: 700,
@@ -148,13 +139,17 @@ export default function Post({ children, type }: PostProps) {
           />
         </div>
         <div className="flex gap-2 mb-3">
-          <Checkbox id="public" />
+          <Checkbox id="public" disabled={isSubmiting} />
           <Label htmlFor="public">Público</Label>
         </div>
         <div className="mt-10 flex items-center gap-10 justify-end">
-          <Button type="submit" className="font-bold w-full md:w-44">
+          <Button
+            type="submit"
+            className="font-bold w-full md:w-44"
+            disabled={isSubmiting}
+          >
             <SaveAll />
-            Salvar
+            {isSubmiting ? "Salvando..." : "Salvar"}
           </Button>
         </div>
       </form>
