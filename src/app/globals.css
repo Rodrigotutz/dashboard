@@ -192,3 +192,30 @@ i ::-webkit-scrollbar-thumb:hover {
 ::-webkit-scrollbar-track {
   border-radius: 10px;
 }
+
+
+
+.custom-calendar {
+  --fc-border-color: #1d1d1d;
+  --fc-daygrid-event-dot-width: 10px;
+  --fc-button-bg-color: #000;
+  --fc-button-border-color: #000;
+  --fc-button-text-color: #fff;
+  --fc-button-hover-bg-color: #333;
+  --fc-button-hover-border-color: #333;
+  --fc-today-bg-color: #eee;
+  --fc-page-bg-color: #fff;
+  --fc-neutral-bg-color: #000000;
+  --fc-neutral-text-color: #000;
+  --fc-event-bg-color: #000;
+  --fc-event-border-color: #000;
+  --fc-event-text-color: #fff;
+}
+
+.custom-calendar .fc {
+  background-color: #fff;
+  color: #000;
+  font-family: inherit;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}

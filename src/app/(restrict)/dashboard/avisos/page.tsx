@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ptBR } from "date-fns/locale";
+import { format, isSameDay } from "date-fns";
+
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import ptBrLocale from "@fullcalendar/core/locales/pt-br";
+
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -12,12 +19,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
 
-import {
-  Calendar as CalendarIcon,
-  Check,
-  Info,
-  PlusCircle,
-} from "lucide-react";
+import { Calendar as CalendarIcon, Info, PlusCircle } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 
 import {
@@ -39,8 +41,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-
-import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
 
@@ -83,11 +83,11 @@ function DraggableCard({
 
 export default function Page() {
   const [date, setDate] = useState<Date | undefined>();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
   const [userCity, setUserCity] = useState("");
+  const [tituloMes, setTituloMes] = useState("");
   const [newAlerts, setNewAlerts] = useState<
-    { id: string; title: string; description: string; date?: Date }[]
-  >([]);
-  const [weeklyAlerts, setWeeklyAlerts] = useState<
     { id: string; title: string; description: string; date?: Date }[]
   >([]);
 
@@ -125,6 +125,25 @@ export default function Page() {
     toast.info("Você tem um novo aviso!");
     setIsOpen(false);
   };
+
+  const calendarEvents = useMemo(
+    () =>
+      newAlerts
+        .filter((e) => e.date)
+        .map((e) => ({
+          title: e.title,
+          start: new Date(e.date!),
+          end: new Date(e.date!),
+        })),
+    [newAlerts]
+  );
+
+  const filteredAlerts = useMemo(() => {
+    if (!selectedDate) return [];
+    return newAlerts.filter((item) =>
+      item.date ? isSameDay(new Date(item.date), selectedDate) : false
+    );
+  }, [newAlerts, selectedDate]);
 
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -252,37 +271,65 @@ export default function Page() {
           </Dialog>
         </div>
 
-        <div className="p-5 flex justify-between gap-10 ">
+        <div className="p-5 flex justify-between gap-10">
           <div className="min-h-[500px] w-2/5 rounded-md border-2 p-5 flex flex-col gap-10">
             <h3 className="text-center text-lg font-bold flex items-center justify-center gap-1">
-              <Check size={18} /> Novos avisos
+              <CalendarIcon size={18} /> Avisos do Dia
             </h3>
             <SortableContext
-              items={newAlerts}
+              items={filteredAlerts}
               strategy={verticalListSortingStrategy}
             >
               <div className="flex flex-col gap-5 font-bold">
-                {newAlerts.map((item) => (
-                  <DraggableCard key={item.id} item={item} />
-                ))}
+                {filteredAlerts.length === 0 ? (
+                  <div className="text-center space-y-2">
+                    <p className="text-sm font-medium text-neutral-600">
+                      {selectedDate &&
+                        format(selectedDate, "EEEE',' dd 'de' MMMM", {
+                          locale: ptBR,
+                        })}
+                    </p>
+                    <p className="text-muted-foreground">
+                      Nenhum agendamento encontrado
+                    </p>
+                  </div>
+                ) : (
+                  filteredAlerts.map((item) => (
+                    <DraggableCard key={item.id} item={item} />
+                  ))
+                )}
               </div>
             </SortableContext>
           </div>
 
-          <div className="w-full min-h-96 rounded-md border-2 p-5 flex flex-col gap-10">
-            <h3 className="text-center font-bold text-lg flex gap-2 items-center">
-              <CalendarIcon /> Todos os Avisos da Semana:
-            </h3>
-            <SortableContext
-              items={weeklyAlerts}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="flex flex-col gap-5">
-                {weeklyAlerts.map((item) => (
-                  <DraggableCard key={item.id} item={item} />
-                ))}
+          <div className="w-full h-[600px] rounded-md overflow-hidden custom-calendar">
+            {calendarEvents.length === 0 ? (
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                Sem eventos para exibir
               </div>
-            </SortableContext>
+            ) : (
+              <FullCalendar
+                plugins={[dayGridPlugin, interactionPlugin]}
+                initialView="dayGridMonth"
+                locale={ptBrLocale}
+                events={calendarEvents}
+                height="100%"
+                headerToolbar={{
+                  left: "",
+                  center: "title",
+                  right: "",
+                }}
+                buttonText={{
+                  today: "Hoje",
+                  month: "Mês",
+                  week: "Semana",
+                  day: "Dia",
+                }}
+                dateClick={(info) => {
+                  setSelectedDate(info.date);
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
