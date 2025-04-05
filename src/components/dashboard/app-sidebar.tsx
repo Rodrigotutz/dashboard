@@ -22,6 +22,7 @@ import {
   Eye,
   Newspaper,
   Info,
+  Calendar,
 } from "lucide-react";
 import {
   Sidebar,
@@ -69,9 +70,9 @@ const items = [
     size: 20,
   },
   {
-    title: "Avisos",
-    url: "/avisos",
-    icon: Info,
+    title: "Agendamentos",
+    url: "/agendamentos",
+    icon: Calendar,
     size: 20,
   },
   /** {

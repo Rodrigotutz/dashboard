@@ -201,7 +201,7 @@ i ::-webkit-scrollbar-thumb:hover {
   --fc-button-text-color: #fff;
   --fc-button-hover-bg-color: #333;
   --fc-button-hover-border-color: #333;
-  --fc-today-bg-color: #494949;
+  --fc-today-bg-color: #919191;
   --fc-page-bg-color: #fff;
   --fc-neutral-bg-color: #000000;
   --fc-neutral-text-color: #000;
@@ -210,6 +210,9 @@ i ::-webkit-scrollbar-thumb:hover {
   --fc-event-text-color: #fff;
 }
 
+.fc-event-time {
+  display: none !important;
+}
 
 .custom-calendar .fc-day-today {
   background-color: var(--fc-today-bg-color) !important;

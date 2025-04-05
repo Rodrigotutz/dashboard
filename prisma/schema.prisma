@@ -50,9 +50,50 @@ model Theme {
   @@map("themes")
 }
 
+model SchedulingType {
+  id        Int        @id @default(autoincrement())
+  title     String     @unique
+  label     String
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  schedules Schedule[]
+
+  @@map("scheduling_types")
+}
+
+model City {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  label     String
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  schedules Schedule[]
+
+  @@map("cities")
+}
+
+model Schedule {
+  id            Int            @id @default(autoincrement())
+  typeId        Int
+  type          SchedulingType @relation(fields: [typeId], references: [id])
+  userId        Int
+  cityId        Int
+  city          City           @relation(fields: [cityId], references: [id])
+  client        String
+  description   String
+  scheduledDate DateTime
+  status        String         @default("pending")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("schedules")
+}
+
 model Category {
-  id        Int       @id @default(autoincrement())
-  title     String    @unique
+  id        Int      @id @default(autoincrement())
+  title     String   @unique
   label     String
   posts     Post[]
   createdAt DateTime @default(now())

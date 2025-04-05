@@ -19,9 +19,29 @@ export async function getUsers() {
     const filteredUsers = users.filter(
       (user) =>
         user.id !== currentUserId &&
-        user.email !== "rodrigoantunestutz@gmail.com",
+        user.email !== "rodrigoantunestutz@gmail.com"
     );
     return filteredUsers;
+  } catch (error) {
+    return { success: false, message: "Erro ao buscar usuários" };
+  }
+}
+
+export async function getAllUsers() {
+  const session = await auth();
+
+  try {
+    if (!session?.user?.id) {
+      return { success: false, message: "Usuário não autenticado" };
+    }
+
+    const currentUserId = Number(session.user.id);
+    const users = await db.user.findMany({
+      orderBy: {
+        id: "desc",
+      },
+    });
+    return users;
   } catch (error) {
     return { success: false, message: "Erro ao buscar usuários" };
   }
