@@ -4,6 +4,7 @@ import db from "@/lib/db";
 
 export async function getSchedules(options?: {
   userId?: number;
+  userType?: string;
   cityId?: number;
   typeId?: number;
   status?: string;
@@ -12,7 +13,7 @@ export async function getSchedules(options?: {
   try {
     const whereClause: any = {};
 
-    if (options?.userId) {
+    if (options?.userType !== "admin" && options?.userId) {
       whereClause.userId = options.userId;
     }
 

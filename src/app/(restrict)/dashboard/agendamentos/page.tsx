@@ -12,40 +12,53 @@ import { Button } from "@/components/ui/button";
 import { NewScheduleDialog } from "@/components/schedule/NewScheduleDialog";
 import { getSchedules } from "@/@actions/schedule/getSchedules";
 import { toast } from "sonner";
-
-interface Schedule {
-  id: number;
-  type: {
-    id: number;
-    title: string;
-  };
-  city: {
-    id: number;
-    name: string;
-  };
-  user: {
-    id: number;
-    name: string;
-  };
-  client: string;
-  description: string;
-  scheduledDate: Date;
-  status: string;
-}
+import { Schedule } from "@/@interfaces/schedule";
+import { Session } from "@/@interfaces/session";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { DraggableCard } from "@/components/schedule/DraggableCard";
 
 export default function SchedulePage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(true);
+  const [orderedAlerts, setOrderedAlerts] = useState<Schedule[]>([]);
   const calendarRef = useRef<any>(null);
   const calendarContainerRef = useRef<HTMLDivElement>(null);
   const lastClickedRef = useRef<number | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const isAdmin = session?.user?.type === "admin";
+
+  const fetchSession = async () => {
+    try {
+      const res = await fetch("/api/auth/session");
+      const data = (await res.json()) as Session;
+      setSession(data);
+    } catch {
+      toast.error("Erro ao obter sessão");
+    }
+  };
 
   const fetchSchedules = async () => {
     try {
       setLoading(true);
-      const result = await getSchedules();
+      if (!session?.user) return;
+      const result = await getSchedules(
+        isAdmin ? {} : { userId: Number(session.user.id) }
+      );
       if (result.success) {
         setSchedules(result.data);
       }
@@ -57,20 +70,23 @@ export default function SchedulePage() {
   };
 
   useEffect(() => {
-    fetchSchedules();
+    fetchSession();
   }, []);
 
   useEffect(() => {
-    if (!calendarContainerRef.current) return;
+    if (session) {
+      fetchSchedules();
+    }
+  }, [session]);
 
+  useEffect(() => {
+    if (!calendarContainerRef.current) return;
     const observer = new ResizeObserver(() => {
       if (calendarRef.current) {
         calendarRef.current.getApi().updateSize();
       }
     });
-
     observer.observe(calendarContainerRef.current);
-
     return () => observer.disconnect();
   }, []);
 
@@ -96,17 +112,34 @@ export default function SchedulePage() {
     );
   }, [schedules, selectedDate]);
 
+  useEffect(() => {
+    setOrderedAlerts(filteredAlerts);
+  }, [filteredAlerts]);
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = orderedAlerts.findIndex((i) => i.id === active.id);
+      const newIndex = orderedAlerts.findIndex((i) => i.id === over?.id);
+      setOrderedAlerts(arrayMove(orderedAlerts, oldIndex, newIndex));
+    }
+  };
+
   const handleDateClick = (info: { date: Date }) => {
     const now = Date.now();
-    if (
+    const doubleClick =
       lastClickedRef.current &&
       now - lastClickedRef.current < 400 &&
-      isSameDay(info.date, selectedDate ?? new Date(0))
-    ) {
-      setIsOpen(true);
+      isSameDay(info.date, selectedDate ?? new Date(0));
+  
+    if (doubleClick) {
+      if (isAdmin) {
+        setIsOpen(true);
+      }
     } else {
       setSelectedDate(info.date);
     }
+  
     lastClickedRef.current = now;
   };
 
@@ -153,9 +186,11 @@ export default function SchedulePage() {
         <h2 className="font-bold text-xl flex items-center gap-2">
           <CalendarIcon /> Agendamentos
         </h2>
-        <Button variant="default" onClick={() => setIsOpen(true)}>
-          <PlusCircle className="mr-2" /> Novo Agendamento
-        </Button>
+        {isAdmin && (
+          <Button variant="default" onClick={() => setIsOpen(true)}>
+            <PlusCircle className="mr-2" /> Novo Agendamento
+          </Button>
+        )}
       </div>
 
       <NewScheduleDialog
@@ -173,7 +208,7 @@ export default function SchedulePage() {
           <div className="flex-1 pr-2">
             {loading ? (
               <div className="text-center">Carregando...</div>
-            ) : filteredAlerts.length === 0 ? (
+            ) : orderedAlerts.length === 0 ? (
               <div className="text-center space-y-2">
                 <p className="text-sm font-medium text-neutral-600">
                   {selectedDate &&
@@ -186,31 +221,22 @@ export default function SchedulePage() {
                 </p>
               </div>
             ) : (
-              <div className="flex flex-col gap-5 font-bold">
-                {filteredAlerts.map((item) => (
-                  <div key={item.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-medium">{item.user.name}</h3>
-                        <p className="text-sm text-gray-600">
-                          {item.description}
-                        </p>
-                      </div>
-                      {renderStatusBadge(item)}
-                    </div>
-                    <div className="mt-2 flex items-center text-sm">
-                      <span className="text-gray-700">Tipo:</span>
-                      <span className="ml-1 font-medium">
-                        {item.type.title}
-                      </span>
-                    </div>
-                    <div className="mt-1 flex items-center text-sm">
-                      <span className="text-gray-700">Cidade:</span>
-                      <span className="ml-1 font-medium">{item.city.name}</span>
-                    </div>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={orderedAlerts.map((i) => i.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="flex flex-col gap-5 font-bold">
+                    {orderedAlerts.map((item) => (
+                      <DraggableCard key={item.id} item={item} />
+                    ))}
                   </div>
-                ))}
-              </div>
+                </SortableContext>
+              </DndContext>
             )}
           </div>
         </div>
@@ -220,10 +246,6 @@ export default function SchedulePage() {
             {loading ? (
               <div className="w-full h-[600px] flex items-center justify-center text-muted-foreground">
                 Carregando calendário...
-              </div>
-            ) : calendarEvents.length === 0 ? (
-              <div className="w-full h-[600px] flex items-center justify-center text-muted-foreground">
-                Sem eventos para exibir
               </div>
             ) : (
               <FullCalendar
