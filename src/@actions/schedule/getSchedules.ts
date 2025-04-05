@@ -43,6 +43,7 @@ export async function getSchedules(options?: {
       include: {
         type: true,
         city: true,
+        user: true,
       },
     });
 

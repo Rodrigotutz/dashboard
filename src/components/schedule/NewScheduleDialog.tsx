@@ -3,7 +3,6 @@
 import { ptBR } from "date-fns/locale";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,38 +22,88 @@ import { cn } from "@/lib/utils";
 import { TechnicianSelect } from "./TechnicianSelect";
 import { CitySelect } from "./CitySelect";
 import { TypeSelect } from "./TypeSelect";
+import { useState, useEffect } from "react";
+import { createSchedule } from "@/@actions/schedule/createSchedule";
+import { toast } from "sonner";
 
 interface NewScheduleDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  formData: {
-    title: string;
-    type: string;
-    description: string;
-    user: string;
-    userCity: string;
-    date: Date | undefined;
-  };
-  setFormData: React.Dispatch<
-    React.SetStateAction<{
-      title: string;
-      type: string;
-      description: string;
-      user: string;
-      userCity: string;
-      date: Date | undefined;
-    }>
-  >;
-  handleSubmit: (e: React.FormEvent) => void;
+  selectedDate: Date | null;
+  onScheduleCreated: () => void;
 }
 
 export function NewScheduleDialog({
   isOpen,
   setIsOpen,
-  formData,
-  setFormData,
-  handleSubmit,
+  selectedDate,
+  onScheduleCreated,
 }: NewScheduleDialogProps) {
+  const [formData, setFormData] = useState({
+    type: "",
+    description: "",
+    user: "",
+    city: "",
+    date: undefined as Date | undefined,
+  });
+
+  const [loading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData((prev) => ({ ...prev, date: selectedDate || undefined }));
+    }
+  }, [selectedDate, isOpen]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    console.log(formData)
+
+    if (
+      !formData.date ||
+      !formData.type ||
+      !formData.user ||
+      !formData.description ||
+      !formData.city
+    ) {
+      toast.error("Preencha todos os campos");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const result = await createSchedule({
+        typeId: Number(formData.type),
+        userId: Number(formData.user),
+        cityId: Number(formData.city),
+        client: "Cliente",
+        description: formData.description,
+        scheduledDate: formData.date,
+      });
+
+      if (result.success) {
+        toast.success("Agendamento criado com sucesso");
+        onScheduleCreated();
+        setFormData({
+          type: "",
+          description: "",
+          user: "",
+          city: "",
+          date: selectedDate || undefined,
+        });
+        setIsOpen(false);
+      } else {
+        toast.error(result.message);
+      }
+    } catch {
+      toast.error("Erro ao criar agendamento");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]">
@@ -64,10 +113,9 @@ export function NewScheduleDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-5">
           <div>
-            <Label htmlFor="type" className="mb-2">
-              Tipo
-            </Label>
+            <Label htmlFor="type">Tipo</Label>
             <TypeSelect
+              disabled={loading}
               value={formData.type}
               onChange={(value) =>
                 setFormData((prev) => ({ ...prev, type: value }))
@@ -76,10 +124,9 @@ export function NewScheduleDialog({
           </div>
 
           <div>
-            <Label htmlFor="technician" className="mb-2">
-              Técnico
-            </Label>
+            <Label htmlFor="technician">Técnico</Label>
             <TechnicianSelect
+              disabled={loading}
               value={formData.user}
               onChange={(value) =>
                 setFormData((prev) => ({ ...prev, user: value }))
@@ -90,19 +137,19 @@ export function NewScheduleDialog({
           <div>
             <Label htmlFor="city">Cidade</Label>
             <CitySelect
-              value={formData.userCity}
+              disabled={loading}
+              value={formData.city}
               onChange={(value) =>
-                setFormData((prev) => ({ ...prev, userCity: value }))
+                setFormData((prev) => ({ ...prev, city: value }))
               }
             />
           </div>
 
           <div>
-            <Label htmlFor="description" className="mb-2">
-              Descrição
-            </Label>
+            <Label htmlFor="description">Descrição</Label>
             <Textarea
               id="description"
+              disabled={loading}
               value={formData.description}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -116,13 +163,11 @@ export function NewScheduleDialog({
           </div>
 
           <div>
-            <Label htmlFor="date" className="mb-2">
-              Data
-            </Label>
+            <Label htmlFor="date">Data</Label>
             <Popover>
-              <PopoverTrigger asChild>
+              <PopoverTrigger asChild disabled={loading}>
                 <Button
-                  variant={"outline"}
+                  variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
                     !formData.date && "text-muted-foreground"
@@ -141,7 +186,10 @@ export function NewScheduleDialog({
                   mode="single"
                   selected={formData.date}
                   onSelect={(date) =>
-                    setFormData((prev) => ({ ...prev, date }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      date: date || undefined,
+                    }))
                   }
                   initialFocus
                   locale={ptBR}
@@ -151,8 +199,8 @@ export function NewScheduleDialog({
           </div>
 
           <div className="pt-2">
-            <Button type="submit" className="w-full">
-              Agendar
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Salvando..." : "Agendar"}
             </Button>
           </div>
         </form>

@@ -15,9 +15,13 @@ import { PlusCircle } from "lucide-react";
 
 interface CreateCityDialogProps {
   onCityCreated: () => void;
+  disabled?: boolean;
 }
 
-export function CreateCityDialog({ onCityCreated }: CreateCityDialogProps) {
+export function CreateCityDialog({
+  onCityCreated,
+  disabled,
+}: CreateCityDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [label, setLabel] = useState("");
@@ -47,7 +51,7 @@ export function CreateCityDialog({ onCityCreated }: CreateCityDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild disabled={disabled}>
         <Button
           type="button"
           className="rounded-l-none border-l-0"
@@ -65,8 +69,11 @@ export function CreateCityDialog({ onCityCreated }: CreateCityDialogProps) {
 
         <div className="space-y-4 mt-4">
           <div>
-            <Label htmlFor="name">Nome da Cidade*</Label>
+            <Label htmlFor="name" className="mb-2">
+              Nome da Cidade
+            </Label>
             <Input
+              disabled={loading}
               id="name"
               value={name}
               onChange={(e) => {
@@ -82,8 +89,11 @@ export function CreateCityDialog({ onCityCreated }: CreateCityDialogProps) {
           </div>
 
           <div>
-            <Label htmlFor="label">Descrição*</Label>
+            <Label htmlFor="label" className="mb-2">
+              Descrição
+            </Label>
             <Input
+              disabled={loading}
               id="label"
               value={label}
               onChange={(e) => {

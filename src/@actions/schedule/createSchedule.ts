@@ -24,8 +24,8 @@ export async function createSchedule(scheduleData: {
     });
 
     return { success: true, id: newSchedule.id, message: "Agendamento criado com sucesso" };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro ao criar agendamento:", error);
-    return { success: false, message: "Não foi possivel criar" };
+    return { success: false, message: error.message };
   }
 }

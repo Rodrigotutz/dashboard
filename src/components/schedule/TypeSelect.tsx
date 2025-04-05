@@ -1,4 +1,4 @@
-import { getCities } from "@/@actions/schedule/getCities";
+import { getTypes } from "@/@actions/schedule/getType";
 import {
   Select,
   SelectContent,
@@ -7,18 +7,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { getTypes } from "@/@actions/schedule/getType";
 import { CreateTypeDialog } from "./CreateTypeDialog";
+import { toast } from "sonner";
 
 interface TypesSelectProps {
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export function TypeSelect({ value, onChange }: TypesSelectProps) {
-  const [types, setTypes] = useState<{ value: string; label: string }[]>([]);
+export function TypeSelect({ value, onChange, disabled }: TypesSelectProps) {
+  const [types, setTypes] = useState<{ title: string; id: string }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchTypes = async () => {
     try {
@@ -26,17 +26,17 @@ export function TypeSelect({ value, onChange }: TypesSelectProps) {
 
       if (result.success) {
         const formattedTypes = result.data.map((type) => ({
-          value: type.title,
-          label: type.label,
+          title: String(type.title),
+          id: String(type.id),
         }));
 
         setTypes(formattedTypes);
       } else {
-        setError(result.message);
+        toast.error(result.message);
       }
     } catch (error) {
       console.error("Erro ao buscar tipos:", error);
-      setError("Erro ao carregar tipos");
+      toast.error("Erro ao carregar tipos");
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,7 @@ export function TypeSelect({ value, onChange }: TypesSelectProps) {
         value={value}
         disabled={loading || isEmpty}
       >
-        <SelectTrigger className="w-full rounded-r-none">
+        <SelectTrigger className="w-full rounded-r-none" disabled={disabled}>
           <SelectValue
             placeholder={
               loading
@@ -77,15 +77,15 @@ export function TypeSelect({ value, onChange }: TypesSelectProps) {
             </SelectItem>
           ) : (
             types.map((type) => (
-              <SelectItem key={type.value} value={type.value}>
-                {type.value}
+              <SelectItem key={type.id} value={type.id}>
+                {type.title}
               </SelectItem>
             ))
           )}
         </SelectContent>
       </Select>
 
-      <CreateTypeDialog onTypeCreated={fetchTypes} />
+      <CreateTypeDialog onTypeCreated={fetchTypes} disabled={disabled} />
     </div>
   );
 }

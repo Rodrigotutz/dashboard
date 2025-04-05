@@ -16,9 +16,13 @@ import { registerType } from "@/@actions/schedule/registerType";
 
 interface CreateTypeDialogProps {
   onTypeCreated: () => void;
+  disabled?: boolean;
 }
 
-export function CreateTypeDialog({ onTypeCreated }: CreateTypeDialogProps) {
+export function CreateTypeDialog({
+  onTypeCreated,
+  disabled,
+}: CreateTypeDialogProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [label, setLabel] = useState("");
@@ -48,7 +52,7 @@ export function CreateTypeDialog({ onTypeCreated }: CreateTypeDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild disabled={disabled}>
         <Button
           type="button"
           className="rounded-l-none border-l-0"
@@ -66,9 +70,12 @@ export function CreateTypeDialog({ onTypeCreated }: CreateTypeDialogProps) {
 
         <div className="space-y-4 mt-4">
           <div>
-            <Label htmlFor="title">Titulo</Label>
+            <Label htmlFor="title" className="mb-2">
+              Titulo
+            </Label>
             <Input
               id="title"
+              disabled={loading}
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
@@ -83,8 +90,11 @@ export function CreateTypeDialog({ onTypeCreated }: CreateTypeDialogProps) {
           </div>
 
           <div>
-            <Label htmlFor="label">Abreviação</Label>
+            <Label htmlFor="label" className="mb-2">
+              Abreviação
+            </Label>
             <Input
+              disabled={loading}
               id="label"
               value={label}
               onChange={(e) => {

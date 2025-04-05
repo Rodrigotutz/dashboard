@@ -25,6 +25,7 @@ model User {
   RoomUser            RoomUser[]
   Message             Message[]
   tips                Post[]
+  Schedule            Schedule[]
 
   @@map("users")
 }
@@ -75,18 +76,20 @@ model City {
 }
 
 model Schedule {
-  id            Int            @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   typeId        Int
-  type          SchedulingType @relation(fields: [typeId], references: [id])
   userId        Int
   cityId        Int
-  city          City           @relation(fields: [cityId], references: [id])
   client        String
   description   String
   scheduledDate DateTime
-  status        String         @default("pending")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  status        String   @default("pending")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  type SchedulingType @relation(fields: [typeId], references: [id])
+  city City           @relation(fields: [cityId], references: [id])
+  user User           @relation(fields: [userId], references: [id])
 
   @@map("schedules")
 }

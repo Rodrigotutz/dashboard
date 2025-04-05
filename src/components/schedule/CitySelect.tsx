@@ -7,16 +7,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { PlusCircle } from "lucide-react";
 import { CreateCityDialog } from "./CreateCityDialog";
 
 interface CitySelectProps {
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export function CitySelect({ value, onChange }: CitySelectProps) {
-  const [cities, setCities] = useState<{ value: string; label: string }[]>([]);
+export function CitySelect({ value, onChange, disabled }: CitySelectProps) {
+  const [cities, setCities] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,9 +25,9 @@ export function CitySelect({ value, onChange }: CitySelectProps) {
       const result = await getCities({ activeOnly: true });
 
       if (result.success) {
-        const formattedCities = result.data.map((city) => ({
-          value: city.name,
-          label: city.label,
+        const formattedCities = result.data.map((city: any) => ({
+          id: String(city.id),
+          name: city.name,
         }));
 
         setCities(formattedCities);
@@ -55,7 +55,7 @@ export function CitySelect({ value, onChange }: CitySelectProps) {
         value={value}
         disabled={loading || isEmpty}
       >
-        <SelectTrigger className="w-full rounded-r-none">
+        <SelectTrigger className="w-full rounded-r-none" disabled={disabled}>
           <SelectValue
             placeholder={
               loading
@@ -77,15 +77,15 @@ export function CitySelect({ value, onChange }: CitySelectProps) {
             </SelectItem>
           ) : (
             cities.map((city) => (
-              <SelectItem key={city.value} value={city.value}>
-                {city.label}
+              <SelectItem key={city.id} value={city.id}>
+                {city.name}
               </SelectItem>
             ))
           )}
         </SelectContent>
       </Select>
 
-      <CreateCityDialog onCityCreated={fetchCities} />
+      <CreateCityDialog disabled={disabled} onCityCreated={fetchCities} />
     </div>
   );
 }

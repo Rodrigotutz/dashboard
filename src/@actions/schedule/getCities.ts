@@ -2,16 +2,18 @@
 
 import db from "@/lib/db";
 
-export async function getCities(options?: {
-  activeOnly?: boolean;
-}) {
+export async function getCities(options?: { activeOnly?: boolean }) {
   try {
     const whereClause = options?.activeOnly ? { active: true } : {};
 
     const cities = await db.city.findMany({
       where: whereClause,
       orderBy: {
-        name: 'asc',
+        name: "asc",
+      },
+      select: {
+        id: true,
+        name: true,
       },
     });
 
@@ -22,7 +24,7 @@ export async function getCities(options?: {
     };
   } catch (error) {
     console.error("Erro ao buscar cidades:", error);
-    
+
     return {
       success: false,
       message: "Erro ao buscar cidades. Tente novamente.",

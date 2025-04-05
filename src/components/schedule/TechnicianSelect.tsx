@@ -12,9 +12,14 @@ import {
 interface TechnicianSelectProps {
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
-export function TechnicianSelect({ value, onChange }: TechnicianSelectProps) {
+export function TechnicianSelect({
+  value,
+  onChange,
+  disabled,
+}: TechnicianSelectProps) {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -38,7 +43,7 @@ export function TechnicianSelect({ value, onChange }: TechnicianSelectProps) {
 
   return (
     <Select onValueChange={onChange} value={value} disabled={isLoading}>
-      <SelectTrigger className="w-full">
+      <SelectTrigger className="w-full" disabled={disabled}>
         <SelectValue
           placeholder={isLoading ? "Carregando..." : "Selecione um técnico"}
         />
@@ -50,7 +55,7 @@ export function TechnicianSelect({ value, onChange }: TechnicianSelectProps) {
           </SelectItem>
         ) : (
           users.map((user) => (
-            <SelectItem key={user.id} value={user.name}>
+            <SelectItem key={user.id} value={String(user.id)}>
               {user.name}
             </SelectItem>
           ))
