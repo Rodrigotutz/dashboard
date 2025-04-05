@@ -1,18 +1,24 @@
+"use client";
+
 import { Schedule } from "@/@interfaces/schedule";
 import { useSortable } from "@dnd-kit/sortable";
 import { isBefore, startOfToday } from "date-fns";
+import { CSS } from "@dnd-kit/utilities";
+import { cn } from "@/lib/utils";
 
 interface DraggableCardProps {
   item: Schedule;
+  isDragging?: boolean;
 }
 
-export function DraggableCard({ item }: DraggableCardProps) {
+export function DraggableCard({ item, isDragging }: DraggableCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: item.id });
 
   const style = {
-    transform: transform ? `translateY(${transform.y}px)` : undefined,
+    transform: CSS.Transform.toString(transform),
     transition,
+    opacity: isDragging ? 0.5 : 1,
   };
 
   const isResolved = isBefore(new Date(item.scheduledDate), startOfToday());
@@ -23,7 +29,10 @@ export function DraggableCard({ item }: DraggableCardProps) {
       {...attributes}
       {...listeners}
       style={style}
-      className="border bg-neutral-950 rounded-lg p-4 cursor-grab"
+      className={cn(
+        "border relative bg-neutral-950 rounded-lg p-4 cursor-grab active:cursor-grabbing",
+        isDragging && "shadow-lg ring-2 ring-blue-500"
+      )}
     >
       <div className="flex justify-between items-start">
         <div>

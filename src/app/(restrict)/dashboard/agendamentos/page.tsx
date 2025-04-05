@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import { ptBR } from "date-fns/locale";
-import { format, isBefore, isSameDay, startOfToday } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -20,6 +20,9 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -27,6 +30,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { DraggableCard } from "@/components/schedule/DraggableCard";
+import { DeleteScheduleDrop } from "@/components/schedule/deleteScheduleDrop";
+import { deleteSchedule } from "@/@actions/schedule/deleteSchedule";
+import { CSS } from "@dnd-kit/utilities";
 
 export default function SchedulePage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -38,7 +44,16 @@ export default function SchedulePage() {
   const calendarContainerRef = useRef<HTMLDivElement>(null);
   const lastClickedRef = useRef<number | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const sensors = useSensors(useSensor(PointerSensor));
+  const [activeId, setActiveId] = useState<number | null>(null);
+  const [activeItem, setActiveItem] = useState<Schedule | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   const isAdmin = session?.user?.type === "admin";
 
@@ -116,13 +131,35 @@ export default function SchedulePage() {
     setOrderedAlerts(filteredAlerts);
   }, [filteredAlerts]);
 
-  const handleDragEnd = (event: any) => {
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    setActiveId(active.id as number);
+    const item = orderedAlerts.find((i) => i.id === active.id);
+    if (item) setActiveItem(item);
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id !== over?.id) {
+
+    if (over && active.id !== over.id && over.id !== "trash-bin") {
       const oldIndex = orderedAlerts.findIndex((i) => i.id === active.id);
-      const newIndex = orderedAlerts.findIndex((i) => i.id === over?.id);
+      const newIndex = orderedAlerts.findIndex((i) => i.id === over.id);
       setOrderedAlerts(arrayMove(orderedAlerts, oldIndex, newIndex));
     }
+
+    if (over?.id === "trash-bin") {
+      try {
+        await deleteSchedule(active.id as number);
+        setSchedules(schedules.filter((s) => s.id !== active.id));
+        toast.success("Agendamento excluído com sucesso!");
+      } catch (error) {
+        console.error("Erro ao excluir agendamento:", error);
+        toast.error("Falha ao excluir agendamento");
+      }
+    }
+
+    setActiveId(null);
+    setActiveItem(null);
   };
 
   const handleDateClick = (info: { date: Date }) => {
@@ -131,7 +168,7 @@ export default function SchedulePage() {
       lastClickedRef.current &&
       now - lastClickedRef.current < 400 &&
       isSameDay(info.date, selectedDate ?? new Date(0));
-  
+
     if (doubleClick) {
       if (isAdmin) {
         setIsOpen(true);
@@ -139,7 +176,7 @@ export default function SchedulePage() {
     } else {
       setSelectedDate(info.date);
     }
-  
+
     lastClickedRef.current = now;
   };
 
@@ -148,40 +185,8 @@ export default function SchedulePage() {
     setIsOpen(false);
   };
 
-  const renderStatusBadge = (item: Schedule) => {
-    const isExpired =
-      item.status === "pending" &&
-      isBefore(new Date(item.scheduledDate), startOfToday());
-
-    if (isExpired) {
-      return (
-        <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-          Expirado
-        </span>
-      );
-    }
-
-    return (
-      <span
-        className={`px-2 py-1 text-xs rounded-full ${
-          item.status === "pending"
-            ? "bg-yellow-100 text-yellow-800"
-            : item.status === "confirmed"
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-        }`}
-      >
-        {item.status === "pending"
-          ? "Pendente"
-          : item.status === "confirmed"
-            ? "Confirmado"
-            : "Cancelado"}
-      </span>
-    );
-  };
-
   return (
-    <div>
+    <div className="relative">
       <div className="pb-5 flex items-center justify-between">
         <h2 className="font-bold text-xl flex items-center gap-2">
           <CalendarIcon /> Agendamentos
@@ -224,18 +229,55 @@ export default function SchedulePage() {
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
               >
                 <SortableContext
                   items={orderedAlerts.map((i) => i.id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="flex flex-col gap-5 font-bold">
+                  <div className="flex flex-col gap-5">
                     {orderedAlerts.map((item) => (
                       <DraggableCard key={item.id} item={item} />
                     ))}
                   </div>
                 </SortableContext>
+                <DragOverlay>
+                  {activeItem ? (
+                    <div
+                      className="border relative bg-neutral-950 rounded-lg p-4 cursor-grabbing shadow-lg"
+                      style={{
+                        transform: CSS.Transform.toString({
+                          x: 0,
+                          y: 0,
+                          scaleX: 1,
+                          scaleY: 1,
+                        }),
+                        opacity: 0.8,
+                      }}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium">
+                            {activeItem.user.name}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {activeItem.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                </DragOverlay>
+                {session?.user?.type === "admin" && (
+                  <DeleteScheduleDrop
+                    onDrop={(id) => {
+                      if (id !== -1) {
+                        handleDragEnd({ active: { id } } as DragEndEvent);
+                      }
+                    }}
+                  />
+                )}
               </DndContext>
             )}
           </div>
