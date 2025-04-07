@@ -54,11 +54,14 @@ export function TechnicianSelect({
             Carregando usuários...
           </SelectItem>
         ) : (
-          users.map((user) => (
-            <SelectItem key={user.id} value={String(user.id)}>
-              {user.name}
-            </SelectItem>
-          ))
+          <>
+            <SelectItem value="all">Todos</SelectItem>
+            {users.map((user) => (
+              <SelectItem key={user.id} value={String(user.id)}>
+                {user.name}
+              </SelectItem>
+            ))}
+          </>
         )}
       </SelectContent>
     </Select>

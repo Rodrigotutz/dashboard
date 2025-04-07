@@ -2,7 +2,7 @@
 
 import { ptBR } from "date-fns/locale";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Clock } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +25,8 @@ import { TypeSelect } from "./TypeSelect";
 import { useState, useEffect } from "react";
 import { createSchedule } from "@/@actions/schedule/createSchedule";
 import { toast } from "sonner";
+import { getAllUsers } from "@/@utils/auth/getUsers";
+import { Input } from "@/components/ui/input";
 
 interface NewScheduleDialogProps {
   isOpen: boolean;
@@ -45,27 +47,32 @@ export function NewScheduleDialog({
     user: "",
     city: "",
     date: undefined as Date | undefined,
+    hour: "08:00",
   });
 
   const [loading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      setFormData((prev) => ({ ...prev, date: selectedDate || undefined }));
+      const initialDate = selectedDate || new Date();
+      setFormData((prev) => ({
+        ...prev,
+        date: initialDate,
+        hour: format(initialDate, "HH:mm"),
+      }));
     }
   }, [selectedDate, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(formData)
-
     if (
       !formData.date ||
       !formData.type ||
       !formData.user ||
       !formData.description ||
-      !formData.city
+      !formData.city ||
+      !formData.hour
     ) {
       toast.error("Preencha todos os campos");
       return;
@@ -74,31 +81,66 @@ export function NewScheduleDialog({
     try {
       setIsLoading(true);
 
-      const result = await createSchedule({
-        typeId: Number(formData.type),
-        userId: Number(formData.user),
-        cityId: Number(formData.city),
-        client: "Cliente",
-        description: formData.description,
-        scheduledDate: formData.date,
-      });
+      const [hours, minutes] = formData.hour.split(":").map(Number);
+      const scheduledDate = new Date(formData.date);
+      scheduledDate.setHours(hours, minutes, 0, 0);
 
-      if (result.success) {
-        toast.success("Agendamento criado com sucesso");
-        onScheduleCreated();
-        setFormData({
-          type: "",
-          description: "",
-          user: "",
-          city: "",
-          date: selectedDate || undefined,
-        });
-        setIsOpen(false);
+      if (formData.user === "all") {
+        const usersData = await getAllUsers();
+        if (!Array.isArray(usersData)) {
+          throw new Error("Não foi possível obter a lista de usuários");
+        }
+
+        const results = await Promise.all(
+          usersData.map((user) =>
+            createSchedule({
+              typeId: Number(formData.type),
+              userId: Number(user.id),
+              cityId: Number(formData.city),
+              description: formData.description,
+              scheduledDate,
+            })
+          )
+        );
+
+        const failed = results.filter((r) => !r.success);
+        if (failed.length > 0) {
+          toast.error(
+            `Alguns agendamentos falharam (${failed.length}/${results.length})`
+          );
+        } else {
+          toast.success(
+            `Agendamentos criados com sucesso para ${results.length} técnicos`
+          );
+        }
       } else {
-        toast.error(result.message);
+        const result = await createSchedule({
+          typeId: Number(formData.type),
+          userId: Number(formData.user),
+          cityId: Number(formData.city),
+          description: formData.description,
+          scheduledDate,
+        });
+
+        if (result.success) {
+          toast.success("Agendamento criado com sucesso");
+        } else {
+          toast.error(result.message);
+        }
       }
-    } catch {
-      toast.error("Erro ao criar agendamento");
+
+      onScheduleCreated();
+      setFormData({
+        type: "",
+        description: "",
+        user: "",
+        city: "",
+        date: selectedDate || undefined,
+        hour: "08:00",
+      });
+      setIsOpen(false);
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao criar agendamento");
     } finally {
       setIsLoading(false);
     }
@@ -162,40 +204,62 @@ export function NewScheduleDialog({
             />
           </div>
 
-          <div>
-            <Label htmlFor="date">Data</Label>
-            <Popover>
-              <PopoverTrigger asChild disabled={loading}>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !formData.date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {formData.date ? (
-                    format(formData.date, "PPP", { locale: ptBR })
-                  ) : (
-                    <span>Selecione uma data</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={formData.date}
-                  onSelect={(date) =>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="date">Data</Label>
+              <Popover>
+                <PopoverTrigger asChild disabled={loading}>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !formData.date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {formData.date ? (
+                      format(formData.date, "PPP", { locale: ptBR })
+                    ) : (
+                      <span>Selecione uma data</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={formData.date}
+                    onSelect={(date) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        date: date || undefined,
+                      }))
+                    }
+                    initialFocus
+                    locale={ptBR}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div>
+              <Label htmlFor="hour">Hora</Label>
+              <div className="relative">
+                <Input
+                  type="time"
+                  id="hour"
+                  value={formData.hour}
+                  onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      date: date || undefined,
+                      hour: e.target.value,
                     }))
                   }
-                  initialFocus
-                  locale={ptBR}
+                  className="w-full"
+                  disabled={loading}
                 />
-              </PopoverContent>
-            </Popover>
+                <Clock className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
           </div>
 
           <div className="pt-2">

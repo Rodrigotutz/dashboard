@@ -8,35 +8,27 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  email       String   @unique
-  name        String
-  password    String
-  confirmed   Boolean?
-  confirmCode String?
-  type        UserType @default(user)
-
-  googleAccessToken  String?
-  googleRefreshToken String?
-  googleTokenExpiry  Int?
-
-  themeId Int?
-  theme   Theme? @relation(fields: [themeId], references: [id])
-
-  passwordResetTokens PasswordResetToken[]
-  RoomUser            RoomUser[]
+  id                  Int                 @id @default(autoincrement())
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  email               String              @unique
+  name                String
+  password            String
+  confirmed           Boolean?
+  confirmCode         String?
+  type                UserType            @default(user)
+  themeId             Int?
+  googleAccessToken   String?
+  googleRefreshToken  String?
+  googleTokenExpiry   BigInt?
   Message             Message[]
+  passwordResetTokens PasswordResetToken?
   tips                Post[]
+  RoomUser            RoomUser[]
   Schedule            Schedule[]
+  theme               Theme?              @relation(fields: [themeId], references: [id])
 
   @@map("users")
-}
-
-enum UserType {
-  user
-  admin
 }
 
 model Theme {
@@ -49,8 +41,7 @@ model Theme {
   isDefault  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  users User[]
+  users      User[]
 
   @@map("themes")
 }
@@ -80,20 +71,19 @@ model City {
 }
 
 model Schedule {
-  id            Int      @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   typeId        Int
   userId        Int
-  cityId        Int
-  client        String
   description   String
   scheduledDate DateTime
-  status        String   @default("pending")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  type SchedulingType @relation(fields: [typeId], references: [id])
-  city City           @relation(fields: [cityId], references: [id])
-  user User           @relation(fields: [userId], references: [id])
+  status        String         @default("pending")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  cityId        Int
+  googleEventId String?
+  city          City           @relation(fields: [cityId], references: [id])
+  type          SchedulingType @relation(fields: [typeId], references: [id])
+  user          User           @relation(fields: [userId], references: [id])
 
   @@map("schedules")
 }
@@ -101,27 +91,26 @@ model Schedule {
 model Category {
   id        Int      @id @default(autoincrement())
   title     String   @unique
-  label     String
-  posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  label     String
+  posts     Post[]
 
   @@map("categories")
 }
 
 model Post {
-  id       Int      @id @default(autoincrement())
-  userId   Int
-  title    String
-  slug     String   @unique @default("")
-  likes    Int?     @default(0)
-  dislikes Int?     @default(0)
-  content  String
-  public   Boolean? @default(false)
-
-  user       User      @relation(fields: [userId], references: [id])
-  Category   Category? @relation(fields: [categoryId], references: [id])
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  title      String
+  slug       String    @unique @default("")
+  likes      Int?      @default(0)
+  dislikes   Int?      @default(0)
+  content    String
+  public     Boolean?  @default(false)
   categoryId Int?
+  Category   Category? @relation(fields: [categoryId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
 
   @@map("posts")
 }
@@ -132,8 +121,7 @@ model PasswordResetToken {
   email     String
   token     String
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("password_reset_tokens")
@@ -151,13 +139,12 @@ model SmtpConfig {
 }
 
 model Room {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String   @unique
-
-  users    RoomUser[]
-  messages Message[]
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  name      String     @unique
+  messages  Message[]
+  users     RoomUser[]
 
   @@map("rooms")
 }
@@ -167,9 +154,8 @@ model RoomUser {
   roomId   Int
   userId   Int
   joinedAt DateTime @default(now())
-
-  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([roomId, userId])
   @@map("room_users")
@@ -181,9 +167,13 @@ model Message {
   roomId    Int
   userId    Int
   content   String
-
-  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("messages")
+}
+
+enum UserType {
+  user
+  admin
 }

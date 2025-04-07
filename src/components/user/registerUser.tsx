@@ -37,12 +37,7 @@ export default function RegisterUser({
 
   useEffect(() => {
     setFormData({ name: defaultName, email: defaultEmail });
-
-    const error = searchParams.get("error");
-    if (error === "usuario_nao_encontrado") {
-      toast.error("Usuário não encontrado. Cadastre-se para continuar.");
-    }
-  }, [defaultName, defaultEmail, searchParams]);
+  }, [defaultName, defaultEmail]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

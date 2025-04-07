@@ -28,21 +28,12 @@ export async function getUsers() {
 }
 
 export async function getAllUsers() {
-  const session = await auth();
 
-  try {
-    if (!session?.user?.id) {
-      return { success: false, message: "Usuário não autenticado" };
-    }
+  const users = await db.user.findMany({
+    orderBy: {
+      id: "desc",
+    },
+  });
+  return users;
 
-    const currentUserId = Number(session.user.id);
-    const users = await db.user.findMany({
-      orderBy: {
-        id: "desc",
-      },
-    });
-    return users;
-  } catch (error) {
-    return { success: false, message: "Erro ao buscar usuários" };
-  }
 }
