@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import registerAction from "@/@actions/auth/registerAction";
 import { toast } from "sonner";
 import PassowordInput from "@/components/form/password-input";
@@ -9,26 +9,40 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface RegisterUserProps {
   children?: React.ReactNode;
   isAdmin?: boolean;
   onSuccess?: () => void;
+  defaultName?: string;
+  defaultEmail?: string;
 }
 
 export default function RegisterUser({
   children,
   isAdmin,
   onSuccess,
+  defaultName = "",
+  defaultEmail = "",
 }: RegisterUserProps) {
   const router = useRouter();
+  const isGoogle = !!defaultName && !!defaultEmail;
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    name: defaultName,
+    email: defaultEmail,
   });
+
+  useEffect(() => {
+    setFormData({ name: defaultName, email: defaultEmail });
+
+    const error = searchParams.get("error");
+    if (error === "usuario_nao_encontrado") {
+      toast.error("Usuário não encontrado. Cadastre-se para continuar.");
+    }
+  }, [defaultName, defaultEmail, searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,15 +52,10 @@ export default function RegisterUser({
     event.preventDefault();
     setLoading(true);
 
-    const data = new FormData(event.target as HTMLFormElement);
-    const result = await registerAction(data, isAdmin);
+    const form = new FormData(event.target as HTMLFormElement);
+    if (isGoogle) form.append("google", "true");
 
-    if (result.type === "email-failure") {
-      toast.error(result.message);
-      setLoading(false);
-      router.push("/confirmar");
-      return;
-    }
+    const result = await registerAction(form, isAdmin);
 
     if (!result.success) {
       toast.error(result.message, { duration: result.duration });
@@ -58,7 +67,9 @@ export default function RegisterUser({
     setLoading(false);
     onSuccess?.();
 
-    if (!isAdmin) {
+    if (isGoogle || isAdmin) {
+      router.push("/login");
+    } else {
       router.push("/confirmar");
     }
   };
@@ -68,7 +79,6 @@ export default function RegisterUser({
       <h2 className="flex items-center gap-2 font-bold text-2xl mb-5 justify-center">
         {children}
       </h2>
-
       <div className="mb-3">
         <Label htmlFor="name" className="mb-1">
           Nome:
@@ -83,7 +93,6 @@ export default function RegisterUser({
           onChange={handleChange}
         />
       </div>
-
       <div className="mb-3">
         <Label htmlFor="email" className="mb-1">
           Email:
@@ -98,18 +107,13 @@ export default function RegisterUser({
           onChange={handleChange}
         />
       </div>
-
-      <PassowordInput placeholder="teste" disabled={loading} />
-
+      <PassowordInput disabled={loading} />
       {isAdmin ? (
         <div className="flex gap-2 mt-5">
           <Checkbox name="admin" id="admin" />
           <Label htmlFor="admin">Administrador</Label>
         </div>
-      ) : (
-        ""
-      )}
-
+      ) : null}
       <Button type="submit" className="w-full mt-5" disabled={loading}>
         {loading ? (
           <div className="flex items-center justify-center">

@@ -10,6 +10,8 @@ import { BsGearFill } from "react-icons/bs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { signIn } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
 
 export default function Page() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function Page() {
     email: "",
   });
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,6 +46,21 @@ export default function Page() {
     setLoading(false);
     router.push("/dashboard");
   };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const result = await signIn("google", { callbackUrl: "/dashboard" });
+      if (result?.error) {
+        toast.error("Falha no login com Google");
+      }
+    } catch (error) {
+      toast.error("Ocorreu um erro durante o login");
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
   return (
     <div className="h-screen w-full flex flex-col gap-10 items-center justify-center p-5">
       <form
@@ -60,25 +78,25 @@ export default function Page() {
             name="email"
             type="email"
             id="email"
-            disabled={loading}
+            disabled={loading || googleLoading}
             placeholder="Insira seu e-mail"
             value={formData.email}
             onChange={handleChange}
           />
         </div>
 
-        <PassowordInput disabled={loading} />
+        <PassowordInput disabled={loading || googleLoading} />
         <div className="mb-5">
           <Link href={"/esqueci"} className="text-xs underline">
             Esqueci minha senha
           </Link>
         </div>
 
-        <div>
+        <div className="space-y-3">
           <Button
             type="submit"
             className="w-full cursor-pointer"
-            disabled={loading}
+            disabled={loading || googleLoading}
           >
             {loading ? (
               <div className="flex items-center justify-center">
@@ -86,7 +104,33 @@ export default function Page() {
                 Enviando...
               </div>
             ) : (
-              "Enviar"
+              "Entrar com Email"
+            )}
+          </Button>
+
+          <div className="relative flex items-center py-2">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="flex-shrink mx-2 text-gray-400 text-sm">OU</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full cursor-pointer gap-2"
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading}
+          >
+            {googleLoading ? (
+              <div className="flex items-center justify-center">
+                <AiOutlineLoading3Quarters className="animate-spin w-5 h-5 mr-2" />
+                Entrando...
+              </div>
+            ) : (
+              <>
+                <FcGoogle className="w-5 h-5" />
+                Entrar com Google
+              </>
             )}
           </Button>
         </div>

@@ -4,18 +4,13 @@ import { Message } from "@/@types/message";
 import { User } from "@/@types/user";
 import db from "@/lib/db";
 import { hashSync } from "bcrypt-ts";
+import { randomUUID } from "crypto";
 import { ConfirmRegisterEmail } from "../../@utils/email/ConfirmRegisterEmail";
 
 async function sendEmail(user: User) {
-  if (!user.confirmCode) {
-    return;
-  }
+  if (!user.confirmCode) return;
   const confirmEmail = new ConfirmRegisterEmail();
-  try {
-    await confirmEmail.execute(user.name, user.email, user.confirmCode);
-  } catch (error: any) {
-    throw new Error(error.message);
-  }
+  await confirmEmail.execute(user.name, user.email, user.confirmCode);
 }
 
 export default async function registerAction(
@@ -29,9 +24,11 @@ export default async function registerAction(
     email: string;
     password: string;
     admin?: string;
+    google?: string;
   };
 
   const userAdmin = data.admin === "on";
+  const isGoogle = data.google === "true";
 
   if (!data.name || !data.email || !data.password) {
     return { success: false, message: "Preencha todos os campos" };
@@ -54,35 +51,25 @@ export default async function registerAction(
     return { success: false, message: "Esse email já está em uso!" };
   }
 
+  const confirmCode = !isAdmin && !isGoogle ? randomUUID() : null;
+
   const user: User = await db.user.create({
     data: {
       email: data.email,
       name: data.name,
       password: hashSync(data.password),
-      confirmed: isAdmin,
-      confirmCode: isAdmin
-        ? null
-        : Math.floor(100000 + Math.random() * 900000).toString(),
-      type: data.admin ? "admin" : "user",
+      confirmed: isAdmin || isGoogle,
+      confirmCode,
+      type: userAdmin ? "admin" : "user",
     },
   });
 
-  if (!isAdmin) {
-    try {
-      await sendEmail(user);
-    } catch (error) {
-      return {
-        success: false,
-        message: "Não foi possível enviar o email, solicite um novo código",
-        type: "email-failure",
-      };
-    }
+  if (confirmCode) {
+    await sendEmail(user);
   }
 
   return {
     success: true,
-    message: isAdmin
-      ? "Usuário cadastrado com sucesso!"
-      : "Enviamos um e-mail com o código de confirmação",
+    message: "Usuário cadastrado com sucesso!",
   };
 }

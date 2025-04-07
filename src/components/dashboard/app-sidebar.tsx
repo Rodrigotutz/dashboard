@@ -58,6 +58,13 @@ const items = [
     size: 20,
   },
   {
+    title: "Agendamentos",
+    url: "/agendamentos",
+    icon: Calendar,
+    size: 20,
+  },
+
+  {
     title: "Dicas",
     url: "/dicas",
     icon: CheckCheck,
@@ -69,12 +76,7 @@ const items = [
     icon: Newspaper,
     size: 20,
   },
-  {
-    title: "Agendamentos",
-    url: "/agendamentos",
-    icon: Calendar,
-    size: 20,
-  },
+
   /** {
      title: "Whatsapp",
      url: "/whatsapp",

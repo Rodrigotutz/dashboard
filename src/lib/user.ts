@@ -22,3 +22,11 @@ export async function findUserByCredentials(email: string, password: string) {
   }
   return null;
 }
+
+export async function findUserByEmail(email: string) {
+  if (!email) return null;
+  const user = await db.user.findUnique({
+    where: { email },
+  });
+  return user;
+}
