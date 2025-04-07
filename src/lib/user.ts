@@ -28,5 +28,13 @@ export async function findUserByEmail(email: string) {
   const user = await db.user.findUnique({
     where: { email },
   });
-  return user;
+  if (!user) return null;
+
+  return {
+    id: user.id.toString(),
+    email: user.email,
+    name: user.name,
+    type: user.type,
+    createdAt: user.createdAt.toISOString(),
+  };
 }

@@ -18,6 +18,10 @@ model User {
   confirmCode String?
   type        UserType @default(user)
 
+  googleAccessToken  String?
+  googleRefreshToken String?
+  googleTokenExpiry  Int?
+
   themeId Int?
   theme   Theme? @relation(fields: [themeId], references: [id])
 
