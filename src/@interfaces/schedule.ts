@@ -13,7 +13,6 @@ export interface Schedule {
     id: number;
     name: string;
   };
-  client: string;
   description: string;
   scheduledDate: Date;
   status: string;
