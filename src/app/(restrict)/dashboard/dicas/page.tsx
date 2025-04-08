@@ -37,8 +37,8 @@ export default function Page() {
       const result: any = await getAllTips();
       setData(result);
     } catch (error) {
-      console.error("Erro inesperado:", error);
-      toast.error("Falha ao carregar postagens");
+      console.error("Erro ao buscar dicas:", error);
+      toast.error("Falha ao carregar dicas");
       setData([]);
     } finally {
       setLoading(false);
@@ -51,25 +51,25 @@ export default function Page() {
   };
 
   const handleDeleteSuccess = (deletedTipId: number) => {
-    setData((prevData) => prevData.filter((tip) => tip.id !== deletedTipId));
+    setData((prev) => prev.filter((tip) => tip.id !== deletedTipId));
   };
 
   const handleVoteSuccess = (updatedTip: Tip) => {
-    setData((prevData) =>
-      prevData.map((tip) => (tip.id === updatedTip.id ? updatedTip : tip))
+    setData((prev) =>
+      prev.map((tip) => (tip.id === updatedTip.id ? updatedTip : tip))
     );
-    if (selectedTip?.id === updatedTip.id) {
-      setSelectedTip(updatedTip);
-    }
+    if (selectedTip?.id === updatedTip.id) setSelectedTip(updatedTip);
   };
 
   const handleUpdateSuccess = (updatedTip: Tip) => {
-    setData((prevData) =>
-      prevData.map((tip) => (tip.id === updatedTip.id ? updatedTip : tip))
+    setData((prev) =>
+      prev.map((tip) => (tip.id === updatedTip.id ? updatedTip : tip))
     );
-    if (selectedTip?.id === updatedTip.id) {
-      setSelectedTip(updatedTip);
-    }
+    if (selectedTip?.id === updatedTip.id) setSelectedTip(updatedTip);
+  };
+
+  const handleToggleSuccess = async () => {
+    await fetchTips();
   };
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export default function Page() {
         <h2 className="font-bold text-xl flex items-center gap-2">
           <CheckCheckIcon /> Dicas
         </h2>
-        <Link href={"/dashboard/dicas/nova"}>
+        <Link href="/dashboard/dicas/nova">
           <Button>
             <PlusCircle /> Nova Dica
           </Button>
@@ -101,10 +101,14 @@ export default function Page() {
           </div>
         </div>
       ) : (
-        <DataTable columns={columns} data={data} onRowClick={handleRowClick} />
+        <DataTable
+          columns={columns(handleToggleSuccess)}
+          data={data}
+          onRowClick={handleRowClick}
+        />
       )}
 
-      <TipDialog  
+      <TipDialog
         tip={selectedTip}
         open={isModalOpen}
         session={session}

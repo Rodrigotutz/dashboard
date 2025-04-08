@@ -195,3 +195,28 @@ export async function updateTip(
   }
 }
 
+
+
+export async function toggleTipPublicStatus(
+  tipId: number,
+  isPublic: boolean
+): Promise<{ success: boolean; message: string }> {
+  try {
+    await db.tip.update({
+      where: { id: tipId },
+      data: { public: isPublic },
+    });
+
+    revalidatePath('/dashboard/dicas');
+    return {
+      success: true,
+      message: `Dica ${isPublic ? 'tornada pública' : 'tornada privada'} com sucesso!`
+    };
+  } catch (error) {
+    console.error('Erro ao atualizar status público da dica:', error);
+    return {
+      success: false,
+      message: "Erro ao atualizar status público da dica"
+    };
+  }
+}

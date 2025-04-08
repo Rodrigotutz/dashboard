@@ -29,7 +29,7 @@ import { Input } from "@/components/ui/input";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onRowClick?: (row: TData) => void;
+  onRowClick?: (row: TData, event: React.MouseEvent) => void;
   className?: string;
 }
 
@@ -82,7 +82,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 ))}
@@ -100,15 +100,25 @@ export function DataTable<TData, TValue>({
                       ? "cursor-pointer hover:bg-neutral-800 rounded-2xl"
                       : ""
                   }
-                  onClick={
-                    onRowClick ? () => onRowClick(row.original) : undefined
-                  }
+                  onClick={(e) => {
+                    if (onRowClick) {
+                      // Verifica se o clique foi em um elemento que deve prevenir a propagação
+                      const target = e.target as HTMLElement;
+                      const shouldPrevent = target.closest(
+                        "[data-prevent-row-click]"
+                      );
+
+                      if (!shouldPrevent) {
+                        onRowClick(row.original, e); // Agora passando ambos os parâmetros
+                      }
+                    }
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}

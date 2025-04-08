@@ -1,8 +1,12 @@
+"use client";
+
+import { toggleTipPublicStatus } from "@/@actions/tip/tip";
 import { Tip } from "@/@types/tip";
 import { ColumnDef } from "@tanstack/react-table";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
+import { toast } from "sonner";
 
-export const columns: ColumnDef<Tip>[] = [
+export const columns = (onToggleSuccess: () => void): ColumnDef<Tip>[] => [
   {
     accessorKey: "title",
     header: "Título",
@@ -24,13 +28,37 @@ export const columns: ColumnDef<Tip>[] = [
     accessorKey: "public",
     header: "",
     cell: ({ row }) => {
-      return row.original.public ? (
-        <div className="flex items-center gap-1">
-          <LockKeyholeOpen className="text-blue-500" size={15} />
-        </div>
-      ) : (
-        <div className="flex items-center gap-1">
-          <LockKeyhole className="text-red-500" size={15} />
+      const handleClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+          const result = await toggleTipPublicStatus(
+            row.original.id,
+            !row.original.public
+          );
+          if (result.success) {
+            toast.success(
+              `Dica ${!row.original.public ? "pública" : "privada"}`
+            );
+            onToggleSuccess();
+          } else {
+            toast.error(result.message);
+          }
+        } catch (error) {
+          toast.error("Erro ao alterar status");
+          console.error("Erro ao alternar status:", error);
+        }
+      };
+
+      return (
+        <div
+          className="flex items-center gap-1 cursor-pointer"
+          onClick={handleClick}
+        >
+          {row.original.public ? (
+            <LockKeyholeOpen className="text-blue-500" size={15} />
+          ) : (
+            <LockKeyhole className="text-red-500" size={15} />
+          )}
         </div>
       );
     },
