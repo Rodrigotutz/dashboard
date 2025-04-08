@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createSlug } from "@/@actions/post/createSlug";
+import { createSlug } from "@/@utils/createSlug";
 import { Posts } from "@/@types/posts";
-import { getPosts } from "@/@utils/posts/getPosts";
+import { getPublicTips } from "@/@actions/tip/tip";
 
 const extractFirstLineText = (html: string) => {
   const tempDiv = document.createElement("div");
@@ -36,13 +36,12 @@ export default function Page() {
   const router = useRouter();
   const [tips, setTips] = useState<Posts[]>([]);
   const [loading, setLoading] = useState(true);
-  const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
     const fetchTips = async () => {
-      const data = await getPosts();
+      const data = await getPublicTips();
       if (data) {
-        const publicTips = data.filter((post) => post.public === true);
+        const publicTips = data.filter((tip) => tip.public === true);
         setTips(publicTips);
       }
       setLoading(false);

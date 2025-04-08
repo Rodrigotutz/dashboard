@@ -5,16 +5,20 @@ import Link from "next/link";
 import { DataTable } from "@/components/dashboard/data-table";
 import { Button } from "@/components/ui/button";
 import { CheckCheckIcon, PlusCircle } from "lucide-react";
-import { getColumns } from "./columns";
-import { Posts } from "@/@types/posts";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getPosts } from "@/@utils/posts/getPosts";
+import { Tip } from "@/@types/tip";
+import { getAllTips } from "@/@actions/tip/tip";
+import { columns } from "./columns";
+import { Session } from "@/@interfaces/session";
+import { TipDialog } from "./TipDialog";
 
 export default function Page() {
-  const [data, setData] = useState<Posts[]>([]);
+  const [data, setData] = useState<Tip[]>([]);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [selectedTip, setSelectedTip] = useState<Tip | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchSession = async () => {
     try {
@@ -27,10 +31,10 @@ export default function Page() {
     }
   };
 
-  const fetchPosts = async () => {
+  const fetchTips = async () => {
     try {
       setLoading(true);
-      const result: any = await getPosts();
+      const result: any = await getAllTips();
       setData(result);
     } catch (error) {
       console.error("Erro inesperado:", error);
@@ -41,9 +45,27 @@ export default function Page() {
     }
   };
 
+  const handleRowClick = (tip: Tip) => {
+    setSelectedTip(tip);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteSuccess = (deletedTipId: number) => {
+    setData((prevData) => prevData.filter((tip) => tip.id !== deletedTipId));
+  };
+
+  const handleVoteSuccess = (updatedTip: Tip) => {
+    setData((prevData) =>
+      prevData.map((tip) => (tip.id === updatedTip.id ? updatedTip : tip))
+    );
+    if (selectedTip?.id === updatedTip.id) {
+      setSelectedTip(updatedTip);
+    }
+  };
+
   useEffect(() => {
     fetchSession();
-    fetchPosts();
+    fetchTips();
   }, []);
 
   return (
@@ -70,8 +92,17 @@ export default function Page() {
           </div>
         </div>
       ) : (
-        <DataTable columns={getColumns()} data={data} />
+        <DataTable columns={columns} data={data} onRowClick={handleRowClick} />
       )}
+
+      <TipDialog
+        tip={selectedTip}
+        open={isModalOpen}
+        session={session}
+        onOpenChange={setIsModalOpen}
+        onDeleteSuccess={handleDeleteSuccess}
+        onVoteSuccess={handleVoteSuccess}
+      />
     </div>
   );
 }

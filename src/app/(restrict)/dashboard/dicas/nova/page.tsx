@@ -1,12 +1,12 @@
 "use client";
 
-import Post from "@/components/post/post";
+import Tip from "@/components/tips/tip";
 import { CheckCheck } from "lucide-react";
 
 export default function Page() {
   return (
-    <Post type="dica">
+    <Tip>
       <CheckCheck /> Nova Dica
-    </Post>
+    </Tip>
   );
 }

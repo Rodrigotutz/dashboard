@@ -1,6 +1,6 @@
 "use server";
 
-import { createSlug } from "@/@actions/post/createSlug";
+import { createSlug } from "@/@utils/createSlug";
 import db from "@/lib/db";
 
 export async function registerPost(postData: {
