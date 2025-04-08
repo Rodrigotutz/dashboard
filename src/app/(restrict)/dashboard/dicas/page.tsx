@@ -63,6 +63,15 @@ export default function Page() {
     }
   };
 
+  const handleUpdateSuccess = (updatedTip: Tip) => {
+    setData((prevData) =>
+      prevData.map((tip) => (tip.id === updatedTip.id ? updatedTip : tip))
+    );
+    if (selectedTip?.id === updatedTip.id) {
+      setSelectedTip(updatedTip);
+    }
+  };
+
   useEffect(() => {
     fetchSession();
     fetchTips();
@@ -95,13 +104,14 @@ export default function Page() {
         <DataTable columns={columns} data={data} onRowClick={handleRowClick} />
       )}
 
-      <TipDialog
+      <TipDialog  
         tip={selectedTip}
         open={isModalOpen}
         session={session}
         onOpenChange={setIsModalOpen}
         onDeleteSuccess={handleDeleteSuccess}
         onVoteSuccess={handleVoteSuccess}
+        onUpdateSuccess={handleUpdateSuccess}
       />
     </div>
   );

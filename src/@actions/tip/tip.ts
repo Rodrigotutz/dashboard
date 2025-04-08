@@ -163,3 +163,35 @@ export async function registerLike(tipId: number, type: "like" | "dislike") {
     return { success: false, message: error.message };
   }
 }
+
+export async function updateTip(
+  tipId: number,
+  formData: FormData
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const title = formData.get("title") as string;
+    const content = formData.get("content") as string;
+    const slug = formData.get("slug") as string;
+
+    if (
+      !title || title.trim().length < 3 ||
+      !content || content.trim().length < 10 ||
+      !slug || slug.trim().length < 3
+    ) {
+      return { success: false, message: "Título, conteúdo ou slug inválido." };
+    }
+
+    await db.tip.update({
+      where: { id: tipId },
+      data: { title, content, slug },
+    });
+
+    revalidatePath("/dashboard/dicas");
+
+    return { success: true, message: "Dica atualizada com sucesso!" };
+  } catch (error) {
+    console.error("Erro ao atualizar dica:", error);
+    return { success: false, message: "Erro ao atualizar dica." };
+  }
+}
+
