@@ -137,7 +137,7 @@ export function TipDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl min-h-[80vh] max-h-[90vh] flex flex-col">
+      <DialogContent className="sm:max-w-5xl min-h-[80vh] max-h-[90vh] flex flex-col">
         <DialogHeader className="sr-only">
           <DialogTitle>Detalhes da Dica</DialogTitle>
         </DialogHeader>
@@ -185,13 +185,14 @@ export function TipDialog({
             <div className="w-[120px]"></div>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-1">
+          <div className="flex-1 overflow-y-auto p-5">
             <div
               ref={contentRef}
               className="prose min-h-[60vh] dark:prose-invert max-w-none 
-                [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
-                [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700 
-                [&_img]:w-full overflow-y-auto flex-1 outline-none"
+    [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
+    [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700
+    [&_br]:my-4 [&_br]:block [&_br]:content-[''] 
+    overflow-y-auto flex-1 outline-none"
               contentEditable={isEditing}
               suppressContentEditableWarning={true}
               dangerouslySetInnerHTML={{ __html: tip.content }}
