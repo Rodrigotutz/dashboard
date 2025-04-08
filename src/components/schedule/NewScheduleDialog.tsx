@@ -155,7 +155,7 @@ export function NewScheduleDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-5">
           <div>
-            <Label htmlFor="type">Tipo</Label>
+            <Label htmlFor="type" className="mb-2">Tipo</Label>
             <TypeSelect
               disabled={loading}
               value={formData.type}
@@ -166,7 +166,7 @@ export function NewScheduleDialog({
           </div>
 
           <div>
-            <Label htmlFor="technician">Técnico</Label>
+            <Label htmlFor="technician" className="mb-2">Técnico</Label>
             <TechnicianSelect
               disabled={loading}
               value={formData.user}
@@ -177,7 +177,7 @@ export function NewScheduleDialog({
           </div>
 
           <div>
-            <Label htmlFor="city">Cidade</Label>
+            <Label htmlFor="city" className="mb-2">Cidade</Label>
             <CitySelect
               disabled={loading}
               value={formData.city}
@@ -188,7 +188,7 @@ export function NewScheduleDialog({
           </div>
 
           <div>
-            <Label htmlFor="description">Descrição</Label>
+            <Label htmlFor="description" className="mb-2">Descrição</Label>
             <Textarea
               id="description"
               disabled={loading}
@@ -202,11 +202,11 @@ export function NewScheduleDialog({
               placeholder="Descreva o agendamento"
               className="min-h-[100px]"
             />
-          </div>
+          </div>  
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="date">Data</Label>
+          <div className="flex gap-5 justify-between">
+            <div className="w-full">
+              <Label htmlFor="date" className="mb-2">Data</Label>
               <Popover>
                 <PopoverTrigger asChild disabled={loading}>
                   <Button
@@ -241,9 +241,9 @@ export function NewScheduleDialog({
               </Popover>
             </div>
 
-            <div>
-              <Label htmlFor="hour">Hora</Label>
-              <div className="relative">
+            <div className="w-full">
+              <Label htmlFor="hour" className="mb-2">Hora</Label>
+              <div className="relative w-full">
                 <Input
                   type="time"
                   id="hour"

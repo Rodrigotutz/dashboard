@@ -138,7 +138,7 @@ export default function Post({ children }: PostProps) {
             <Input
               id="title"
               name="title"
-              className="bg-white text-neutral-900"
+              className="!bg-white text-neutral-900 dark:!bg-white dark:text-neutral-900"
             />
           </div>
         </div>
