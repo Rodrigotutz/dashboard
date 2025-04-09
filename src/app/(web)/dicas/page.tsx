@@ -33,7 +33,6 @@ const extractFirstLineText = (html: string) => {
 };
 
 export default function Page() {
-  const router = useRouter();
   const [tips, setTips] = useState<Posts[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,39 +48,24 @@ export default function Page() {
     fetchTips();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="w-full max-w-7xl mx-auto space-y-4">
-        <div className="mt-10 mb-10 pb-12 border-b text-center">
-          <h2 className="text-2xl font-bold text-neutral-800 mb-2">
-            Carregando Dicas...
-          </h2>
-          <p>Aguarde enquanto trago as dicas pra você...</p>
-        </div>
-        <div className="overflow-hidden">
-          <Skeleton className="h-12 w-full bg-neutral-400 rounded-t-lg rounded-b-none" />
-          <Skeleton className="h-80 w-full bg-neutral-300 rounded-t-none" />
-        </div>
-      </div>
-    );
-  }
-
   if (!tips || tips.length === 0) {
     return (
-      <div className="pb-10">
-        <div className="w-full py-10 bg-neutral-50 flex flex-col items-center justify-center shadow-sm">
-          <h2 className="text-3xl font-bold text-neutral-800 mb-2">Dicas</h2>
+      <div className="bg-white pb-10 h-screen">
+        <div className="w-full py-10 bg-neutral-50 text-neutral-800 flex flex-col items-center justify-center shadow-sm">
+          <h2 className="text-3xl font-bold mb-2">Dicas</h2>
           <p className="text-sneutral-600">
             Acesse todas as dicas disponíveis no sistema!
           </p>
         </div>
         <div className="w-full max-w-7xl mx-auto mt-8 p-8">
-          <div className="bg-neutral-800 h-96 flex flex-col items-center justify-center rounded-lg p-8">
-            <h3 className="text-2xl font-medium text-white mb-4">
-              Nenhuma dica encontrada
+          <div className="border border-neutral-400 h-96 flex text-neutral-800 flex-col items-center justify-center rounded-lg p-8">
+            <h3 className="text-2xl font-medium  mb-4">
+              {loading ? "Carregando dicas..." : "Nenhuma dica encontrada"}
             </h3>
-            <p className="text-neutral-200">
-              No momento não há dicas disponíveis.
+            <p className=" text-center">
+              {loading
+                ? "Carregando dicas..."
+                : "No momento não há dicas disponíveis."}
             </p>
           </div>
         </div>
@@ -90,9 +74,9 @@ export default function Page() {
   }
 
   return (
-    <div className="pb-10">
-      <div className="w-full py-10 bg-neutral-50 flex flex-col items-center justify-center shadow-sm">
-        <h2 className="text-3xl font-bold text-neutral-800 mb-2">Dicas</h2>
+    <div className="pb-10 bg-white h-screen">
+      <div className="w-full py-10 bg-neutral-50 text-neutral-800 flex flex-col items-center justify-center shadow-sm">
+        <h2 className="text-3xl font-bold mb-2">Dicas</h2>
         <p className="text-neutral-600">
           Acesse todas as dicas disponíveis no sistema!
         </p>
@@ -104,7 +88,6 @@ export default function Page() {
             Título:
           </div>
           <div className="col-span-5 px-6 py-3 text-left">Descrição:</div>
-          <div className="col-span-2 px-6 py-3 text-left">Autor:</div>
           <div className="col-span-2 px-6 py-3 text-left">Data:</div>
         </div>
 
@@ -126,9 +109,6 @@ export default function Page() {
                   <div className="col-span-5 px-6 py-4 text-sm text-neutral-600 truncate">
                     {extractFirstLineText(tip.content).substring(0, 100)}
                     {extractFirstLineText(tip.content).length > 100 && "..."}
-                  </div>
-                  <div className="col-span-2 px-6 py-4 text-neutral-700 truncate">
-                    {tip.userName}
                   </div>
                   <div className="col-span-2 px-6 py-4 text-neutral-500 truncate">
                     {new Date(tip.createdAt || new Date()).toLocaleDateString(

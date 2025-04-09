@@ -10,7 +10,7 @@ export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="bg-[#0a0a0a]">
+    <div>
       <header className="hidden md:block">
         <Navbar />
       </header>
@@ -22,7 +22,7 @@ export default function Layout({
           <WebSidebar />
         </aside>
 
-        <main className="light w-full md:pt-0">{children}</main>
+        <main className="light w-full md:pt-0 bg-white text-neutral-800">{children}</main>
       </SidebarProvider>
     </div>
   );

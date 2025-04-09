@@ -6,7 +6,7 @@ export default function Page() {
   useEffect(() => {});
 
   return (
-    <div>
+    <div className="bg-neutral-950">
       <MainHeader />
 
       <DashboardLanding />
