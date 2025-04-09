@@ -1,55 +1,79 @@
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer';
+import chromium from '@sparticuz/chromium-min';
+import puppeteer from 'puppeteer-core';
+import fs from 'fs';
 
-export const dynamic = 'force-dynamic'; // Necessário para evitar cache
+// Configuração multiplataforma para o executável do Chrome
+const getChromePath = () => {
+  // Caminhos possíveis para Windows
+  const windowsPaths = [
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
+  ];
+
+  // Verifica cada caminho no Windows
+  if (process.platform === 'win32') {
+    return windowsPaths.find(path => fs.existsSync(path));
+  }
+
+  // Caminho padrão para Linux/Mac (caso precise testar em outros ambientes)
+  return '/usr/bin/google-chrome-stable';
+};
+
+export const dynamic = 'force-dynamic';
+export const maxDuration = 30;
 
 export async function POST(request: Request) {
   try {
-    const { html, options } = await request.json();
+    const { html } = await request.json();
 
     const browser = await puppeteer.launch({
-      headless: true,
       args: [
+        ...chromium.args,
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--font-render-hinting=none' // Melhora renderização de fontes
+        '--disable-dev-shm-usage'
       ],
+      executablePath: process.env.NODE_ENV === 'development'
+        ? getChromePath() || puppeteer.executablePath()
+        : await chromium.executablePath(),
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
-
-    // Configurar para usar fontes sans-serif como padrão
     await page.setContent(html, {
       waitUntil: 'networkidle0',
+      timeout: 60000
     });
 
-    // Opções padrão para o PDF
-    const pdfOptions = {
-      format: 'A4' as const,
+    const pdf = await page.pdf({
+      format: 'A4',
       printBackground: true,
       margin: {
         top: '20mm',
         right: '20mm',
         bottom: '20mm',
         left: '20mm'
-      },
-      ...options
-    };
+      }
+    });
 
-    const pdf = await page.pdf(pdfOptions);
     await browser.close();
 
     return new NextResponse(pdf, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="document.pdf"`,
-      },
+        'Content-Disposition': 'attachment; filename="document.pdf"'
+      }
     });
+
   } catch (error) {
-    console.error('Error generating PDF:', error);
+    console.error('Erro ao gerar PDF:', error);
     return NextResponse.json(
-      { error: 'Failed to generate PDF', details: error instanceof Error ? error.message : String(error) },
+      {
+        error: 'Falha ao gerar PDF',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+        stack: process.env.NODE_ENV === 'development' ? (error as Error).stack : undefined
+      },
       { status: 500 }
     );
   }
