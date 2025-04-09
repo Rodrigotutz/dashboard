@@ -1,7 +1,10 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+
 import { getPublicTipBySlug } from "@/@actions/tip/getTipBySlug";
 import { sanitizeHTML } from "@/@utils/posts/sanitize";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { notFound } from "next/navigation";
+import { getPublicTips } from "@/@actions/tip/tip";
 
 export default async function Page({
   params,
@@ -10,17 +13,36 @@ export default async function Page({
 }) {
   const { slug } = await params;
   const title = decodeURIComponent(slug);
-  const tip = await getPublicTipBySlug(title);
 
+  const tip = await getPublicTipBySlug(title);
   if (!tip) return notFound();
+
+  const allTips = await getPublicTips();
+  const otherTips = allTips.filter((t: any) => t.slug !== tip.slug);
 
   const cleanHtml = sanitizeHTML(tip.content);
 
   return (
-    <div className="flex flex-col md:p-10 p-4 bg-white text-neutral-800">
-      <article className="w-full max-w-4xl mx-auto flex flex-col gap-10">
+    <div className="flex items-start gap-20 md:p-10 p-4 bg-white text-neutral-800 mt-10">
+      <div className="w-1/6 min-h-72 border-2 rounded p-5 shadow-lg">
+        <h3 className="text-center font-bold border-b pb-5">Veja mais Dicas</h3>
+        <ul className="mt-4 space-y-3">
+          {otherTips.map((t) => (
+            <li key={t.id}>
+              <Link
+                href={`/dicas/${encodeURIComponent(t.slug)}`}
+                className="text-sm text-blue-600 hover:underline block"
+              >
+                {t.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <article className="w-full flex flex-col gap-10">
         <div>
-          <h1 className="w-full pt-5 text-xl sm:text-3xl text-center font-bold mb-4 pb-5 border-b">
+          <h1 className="w-full text-xl sm:text-3xl text-center font-bold mb-4 pb-5 border-b">
             {tip.title}
           </h1>
           <div
