@@ -1,24 +1,6 @@
 import { NextResponse } from 'next/server';
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
-import fs from 'fs';
-
-// Configuração multiplataforma para o executável do Chrome
-const getChromePath = () => {
-  // Caminhos possíveis para Windows
-  const windowsPaths = [
-    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
-  ];
-
-  // Verifica cada caminho no Windows
-  if (process.platform === 'win32') {
-    return windowsPaths.find(path => fs.existsSync(path));
-  }
-
-  // Caminho padrão para Linux/Mac (caso precise testar em outros ambientes)
-  return '/usr/bin/google-chrome-stable';
-};
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
@@ -27,6 +9,7 @@ export async function POST(request: Request) {
   try {
     const { html } = await request.json();
 
+    // Configuração otimizada para Vercel
     const browser = await puppeteer.launch({
       args: [
         ...chromium.args,
@@ -34,27 +17,22 @@ export async function POST(request: Request) {
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage'
       ],
-      executablePath: process.env.NODE_ENV === 'development'
-        ? getChromePath() || puppeteer.executablePath()
-        : await chromium.executablePath(),
+      executablePath: await chromium.executablePath(
+        process.env.CHROMIUM_REVISION || '115.0.5790.170' // Versão explícita
+      ),
       headless: chromium.headless,
     });
 
     const page = await browser.newPage();
     await page.setContent(html, {
       waitUntil: 'networkidle0',
-      timeout: 60000
+      timeout: 30000
     });
 
     const pdf = await page.pdf({
       format: 'A4',
       printBackground: true,
-      margin: {
-        top: '20mm',
-        right: '20mm',
-        bottom: '20mm',
-        left: '20mm'
-      }
+      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
     });
 
     await browser.close();
@@ -67,12 +45,12 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
-    console.error('Erro ao gerar PDF:', error);
+    console.error('Erro na Vercel:', error);
     return NextResponse.json(
       {
-        error: 'Falha ao gerar PDF',
-        message: error instanceof Error ? error.message : 'Erro desconhecido',
-        stack: process.env.NODE_ENV === 'development' ? (error as Error).stack : undefined
+        error: 'Erro ao gerar PDF na Vercel',
+        solution: 'Verifique os logs ou contate o suporte',
+        details: error instanceof Error ? error.message : JSON.stringify(error)
       },
       { status: 500 }
     );
