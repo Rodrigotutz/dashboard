@@ -119,7 +119,12 @@ export function TipDialog({
   const handleShare = () => {
     if (!tip?.slug) return;
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
+    const isLocalhost =
+      typeof window !== "undefined" && window.location.hostname === "localhost";
+    const baseUrl = isLocalhost
+      ? "http://localhost:3001"
+      : "https://tutz-dashboard.vercel.app";
+
     const url = `${baseUrl}/dicas/${tip.slug}`;
     navigator.clipboard.writeText(url);
     toast.success("Link copiado para a área de transferência!");
@@ -189,10 +194,10 @@ export function TipDialog({
             <div
               ref={contentRef}
               className="prose min-h-[60vh] dark:prose-invert max-w-none 
-    [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
-    [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700
-    [&_br]:my-4 [&_br]:block [&_br]:content-[''] 
-    overflow-y-auto flex-1 outline-none"
+                         [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
+                       [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700
+                         [&_br]:my-4 [&_br]:block [&_br]:content-[''] 
+                         overflow-y-auto flex-1 outline-none"
               contentEditable={isEditing}
               suppressContentEditableWarning={true}
               dangerouslySetInnerHTML={{ __html: tip.content }}
