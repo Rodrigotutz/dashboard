@@ -5,7 +5,7 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { getPublicTipBySlug } from "@/@actions/tip/getTipBySlug";
 import { sanitizeHTML } from "@/@utils/posts/sanitize";
 import { getPublicTips } from "@/@actions/tip/tip";
-
+import { PuppeteerPDFButton } from "@/components/PuppeteerPDFButton";
 export default async function Page({
   params,
 }: {
@@ -52,6 +52,14 @@ export default async function Page({
               [&_img]:max-w-full [&_img]:h-auto
               overflow-hidden break-words"
             dangerouslySetInnerHTML={{ __html: cleanHtml }}
+          />
+        </div>
+
+        <div className="mt-6 mb-4">
+          <PuppeteerPDFButton
+            html={tip.content}
+            title={tip.title}
+            author={tip.user.name}
           />
         </div>
 

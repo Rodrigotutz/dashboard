@@ -44,7 +44,7 @@ export default function SiteFooter() {
       <Separator className="bg-neutral-800 mb-12" />
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-10">
         <div className="space-y-4 md:col-span-2">
-          <h4 className="text-xl font-semibold">Rodrigo Tutz</h4>
+          <h4 className="text-xl font-semibold">Tutz Dashboard</h4>
           <p className="text-sm text-neutral-400 leading-relaxed">
             Criando soluções digitais com performance, acessibilidade e
             excelência em experiência do usuário. Desenvolvimento full-stack com
@@ -110,7 +110,7 @@ export default function SiteFooter() {
       <Separator className="mt-12 mb-6 bg-neutral-900" />
 
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-neutral-500 gap-4">
-        <div>&copy; {year} Rodrigo Tutz. Todos os direitos reservados.</div>
+        <div>&copy; {year} Tutz Dashboard. Todos os direitos reservados.</div>
         <div className="flex space-x-4">
           <Link
             href="/politica-de-privacidade"
