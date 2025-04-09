@@ -9,18 +9,20 @@ export async function POST(request: Request) {
   try {
     const { html } = await request.json();
 
+    // Configurações específicas para a Vercel
+    const isVercel = process.env.VERCEL === '1';
+
     const browser = await puppeteer.launch({
-      args: process.env.VERCEL
-        ? [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox']
-        : ['--no-sandbox', '--disable-setuid-sandbox'],
-      executablePath: process.env.VERCEL
+      args: chromium.args,
+      executablePath: isVercel
         ? await chromium.executablePath()
         : process.platform === 'win32'
           ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
           : process.platform === 'linux'
             ? '/usr/bin/google-chrome'
             : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-      headless: true,
+      headless: chromium.headless,
+      defaultViewport: chromium.defaultViewport,
     });
 
     const page = await browser.newPage();
