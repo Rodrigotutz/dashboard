@@ -28,8 +28,7 @@ export function PuppeteerPDFButton({
                 font-family: 'Helvetica', 'Arial', sans-serif;
                 line-height: 1.6;
                 color: #333;
-                padding: 20px;
-                max-width: 800px;
+                padding: 5px;
                 margin: 0 auto;
               }
               h1 {
@@ -38,11 +37,6 @@ export function PuppeteerPDFButton({
                 border-bottom: 1px solid #eee;
                 padding-bottom: 10px;
                 margin-bottom: 20px;
-              }
-              img {
-                max-width: 100%;
-                height: auto;
-                margin: 10px 0;
               }
               a {
                 color: #0066cc;
@@ -78,10 +72,10 @@ export function PuppeteerPDFButton({
           options: {
             format: "A4",
             margin: {
-              top: "20mm",
-              right: "20mm",
-              bottom: "20mm",
-              left: "20mm",
+              top: "10mm",
+              right: "10mm",
+              bottom: "10mm",
+              left: "10mm",
             },
             printBackground: true,
           },
