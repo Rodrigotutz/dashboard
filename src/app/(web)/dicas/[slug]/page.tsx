@@ -27,7 +27,7 @@ export default async function Page({
             className="prose dark:prose-invert max-w-full w-full
               [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-6 
               [&_a]:text-blue-500 [&_a]:underline [&_a]:hover:text-blue-700
-              [&_img]:max-w-full [&_img]:h-auto [&_img]:w-full
+              [&_img]:max-w-full [&_img]:h-auto
               overflow-hidden break-words"
             dangerouslySetInnerHTML={{ __html: cleanHtml }}
           />

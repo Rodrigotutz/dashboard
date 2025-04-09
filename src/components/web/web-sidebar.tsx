@@ -42,7 +42,7 @@ const items = [
   },
   {
     title: "Noticias",
-    url: "/posts",
+    url: "/noticias",
     icon: FileText,
     size: 20,
   },
