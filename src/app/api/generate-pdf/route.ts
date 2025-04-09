@@ -1,3 +1,4 @@
+// src/app/api/generate-pdf/route.ts
 import { NextResponse } from 'next/server';
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
@@ -9,30 +10,27 @@ export async function POST(request: Request) {
   try {
     const { html } = await request.json();
 
-    // Configuração otimizada para Vercel
     const browser = await puppeteer.launch({
-      args: [
-        ...chromium.args,
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage'
-      ],
-      executablePath: await chromium.executablePath(
-        process.env.CHROMIUM_REVISION || '115.0.5790.170' // Versão explícita
-      ),
-      headless: chromium.headless,
+      args: process.env.VERCEL
+        ? [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox']
+        : ['--no-sandbox', '--disable-setuid-sandbox'],
+      executablePath: process.env.VERCEL
+        ? await chromium.executablePath()
+        : process.platform === 'win32'
+          ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+          : process.platform === 'linux'
+            ? '/usr/bin/google-chrome'
+            : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      headless: true, // Corrigido para valor booleano
     });
 
     const page = await browser.newPage();
-    await page.setContent(html, {
-      waitUntil: 'networkidle0',
-      timeout: 30000
-    });
+    await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
     const pdf = await page.pdf({
       format: 'A4',
       printBackground: true,
-      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
+      margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' },
     });
 
     await browser.close();
@@ -40,17 +38,15 @@ export async function POST(request: Request) {
     return new NextResponse(pdf, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="document.pdf"'
-      }
+        'Content-Disposition': 'attachment; filename="document.pdf"',
+      },
     });
-
   } catch (error) {
-    console.error('Erro na Vercel:', error);
+    console.error('PDF Generation Error:', error);
     return NextResponse.json(
       {
-        error: 'Erro ao gerar PDF na Vercel',
-        solution: 'Verifique os logs ou contate o suporte',
-        details: error instanceof Error ? error.message : JSON.stringify(error)
+        error: 'Failed to generate PDF',
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
