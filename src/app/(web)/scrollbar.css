@@ -1,10 +1,10 @@
 ::-webkit-scrollbar {
   width: 5px;
-  background: #fff;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #353535;
+  background: #ececec;
   border-radius: 10px;
 }
 i ::-webkit-scrollbar-thumb:hover {

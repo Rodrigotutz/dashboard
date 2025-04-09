@@ -1,0 +1,14 @@
+@layer utilities {
+  @keyframes cloud-move {
+    0% {
+      transform: translateX(-15%);
+    }
+    100% {
+      transform: translateX(15%);
+    }
+  }
+  
+  .animate-cloud-move {
+    animation: cloud-move 20s linear infinite alternate;
+  }
+}

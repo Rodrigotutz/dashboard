@@ -1,6 +1,9 @@
-@import "tailwindcss";
+@import url("./fonts.css");
 
+@import "tailwindcss";
 @plugin "tailwindcss-animate";
+
+
 
 :root {
   --background: oklch(1 0 0);
