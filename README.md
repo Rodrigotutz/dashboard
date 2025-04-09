@@ -28,7 +28,7 @@
 
 - Dentro do arquivo prisma/schema.prisma altere o provider para o banco de dados desejado
 
-```shell
+```cmd
 datasource db {
     provider = "mysql"
     url = env("DATABASE_URL")
