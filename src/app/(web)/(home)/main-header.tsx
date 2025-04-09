@@ -13,14 +13,18 @@ export default function MainHeader() {
       <div className="w-full h-[70vh] flex items-center justify-between">
         <div className="flex justify-center p-5 sm:p-0 s-full sm:w-3/4 flex-col items-center">
           <div className="w-full sm:w-3/4">
-            <h2 className="text-5xl font-bold mb-10 text-center">
+            <h2 className="text-5xl font-bold mb-3 text-center raleway">
               Tutz Dashboard
             </h2>
             <p className="text-center">
               Gerencie e publique tudo em um só lugar com praticidade e poder.
             </p>
             <Link href={"/login"} title="dashboard">
-              <Button className="mt-10 p-6 w-full">Acessar Dashboard</Button>
+              <div className="text-center">
+                <Button className="mt-10 p-6 w-full sm:w-48">
+                  Acessar Dashboard
+                </Button>
+              </div>
             </Link>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { Menu } from "lucide-react";
 import React from "react";
 import "./scrollbar.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import SiteFooter from "./footer";
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -22,8 +23,12 @@ export default function Layout({
           <WebSidebar />
         </aside>
 
-        <main className="light w-full md:pt-0 bg-white text-neutral-800">{children}</main>
+        <main className="light w-full md:pt-0 bg-white text-neutral-800">
+          {children}
+        </main>
       </SidebarProvider>
+
+      <SiteFooter />
     </div>
   );
 }
